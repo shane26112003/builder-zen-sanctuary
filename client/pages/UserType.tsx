@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { UserCheck, Baby, Wheelchair, Users, Luggage, ArrowRight } from 'lucide-react';
+import { UserCheck, Baby, Accessibility, Users, Luggage, ArrowRight } from 'lucide-react';
 
 type UserTypeOption = 'general' | 'women' | 'elderly' | 'disabled' | 'pregnant';
 
@@ -36,7 +36,7 @@ const userTypeOptions = [
     id: 'disabled' as UserTypeOption,
     title: 'Person with Disability',
     description: 'Special assistance and accessible seating',
-    icon: Wheelchair,
+    icon: Accessibility,
     color: 'text-blue-600'
   },
   {
@@ -100,10 +100,10 @@ export default function UserType() {
 
             <div className="border-t pt-6">
               <div className="flex items-center space-x-3">
-                <Checkbox 
-                  id="luggage" 
+                <Checkbox
+                  id="luggage"
                   checked={hasLuggage}
-                  onCheckedChange={setHasLuggage}
+                  onCheckedChange={(checked) => setHasLuggage(checked as boolean)}
                 />
                 <Label htmlFor="luggage" className="flex items-center space-x-2 cursor-pointer">
                   <Luggage className="w-5 h-5 text-gray-600" />
