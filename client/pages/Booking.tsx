@@ -130,7 +130,7 @@ export default function Booking() {
                     {selectedSeats.map(seat => (
                       <div key={seat.id} className="flex justify-between items-center p-2 bg-green-50 rounded">
                         <span className="text-sm font-medium">
-                          Cabin {seat.cabin} - {seat.row}{seat.position}
+                          Cabin {seat.cabin} - Seat {seat.seatNumber}
                         </span>
                         <span className="text-sm text-green-700">$25</span>
                       </div>
@@ -170,7 +170,7 @@ export default function Booking() {
                     {userBookings.map(seat => (
                       <div key={seat.id} className="flex justify-between items-center p-2 bg-blue-50 rounded">
                         <span className="text-sm font-medium">
-                          Cabin {seat.cabin} - {seat.row}{seat.position}
+                          Cabin {seat.cabin} - Seat {seat.seatNumber}
                         </span>
                         <Badge variant="outline" className="text-xs">
                           Booked
