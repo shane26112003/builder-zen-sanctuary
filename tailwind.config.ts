@@ -57,6 +57,16 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Metro theme colors
+        metro: {
+          blue: "hsl(var(--metro-blue))",
+          "blue-light": "hsl(var(--metro-blue-light))",
+          "blue-dark": "hsl(var(--metro-blue-dark))",
+          red: "hsl(var(--metro-red))",
+          green: "hsl(var(--metro-green))",
+          orange: "hsl(var(--metro-orange))",
+          purple: "hsl(var(--metro-purple))",
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -80,11 +90,19 @@ export default {
             height: "0",
           },
         },
+        "train-move": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100vw)" }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "train-move": "train-move 8s linear infinite"
       },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],
