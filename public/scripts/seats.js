@@ -73,7 +73,7 @@ class SeatsManager {
             case 2:
                 return {
                     title: 'Priority Cabin',
-                    description: 'For elderly and disabled passengers',
+                    description: 'For pregnant women, women with luggage, disabled, and elderly',
                     type: 'priority'
                 };
             default:
@@ -94,9 +94,17 @@ class SeatsManager {
             return false;
         }
 
-        // Cabin 2 is for elderly and disabled
-        if (seat.cabin === 2 && this.user.userType !== 'elderly' && this.user.userType !== 'disabled') {
-            return false;
+        // Cabin 2 is for pregnant women, women with luggage, disabled, and elderly
+        if (seat.cabin === 2) {
+            const allowedForPriorityCabin =
+                this.user.userType === 'pregnant' ||
+                this.user.userType === 'disabled' ||
+                this.user.userType === 'elderly' ||
+                (this.user.userType === 'women' && this.user.hasLuggage);
+
+            if (!allowedForPriorityCabin) {
+                return false;
+            }
         }
 
         return true;
@@ -110,8 +118,16 @@ class SeatsManager {
             return 'Women-only cabin';
         }
 
-        if (seat.cabin === 2 && this.user.userType !== 'elderly' && this.user.userType !== 'disabled') {
-            return 'Priority cabin for elderly and disabled';
+        if (seat.cabin === 2) {
+            const allowedForPriorityCabin =
+                this.user.userType === 'pregnant' ||
+                this.user.userType === 'disabled' ||
+                this.user.userType === 'elderly' ||
+                (this.user.userType === 'women' && this.user.hasLuggage);
+
+            if (!allowedForPriorityCabin) {
+                return 'Priority cabin for pregnant women, women with luggage, disabled, and elderly';
+            }
         }
 
         return '';
@@ -373,7 +389,11 @@ class SeatsManager {
 
         let accessText = '';
         if (this.user.userType === 'women' || this.user.userType === 'pregnant') {
-            accessText = 'You have access to the women-only cabin (Cabin 1)';
+            if (this.user.hasLuggage) {
+                accessText = 'You have access to women-only cabin (Cabin 1) and priority cabin (Cabin 2)';
+            } else {
+                accessText = 'You have access to the women-only cabin (Cabin 1)';
+            }
         } else if (this.user.userType === 'elderly' || this.user.userType === 'disabled') {
             accessText = 'You have priority access to Cabin 2';
         } else {
