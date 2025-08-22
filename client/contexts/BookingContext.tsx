@@ -6,7 +6,7 @@ export interface Seat {
   cabin: number;
   seatNumber: number;
   row: number;
-  position: 'A' | 'B' | 'C' | 'D'; // A,B = left side, C,D = right side
+  column: 1 | 2; // 1 = left column, 2 = right column
   isBooked: boolean;
   bookedBy?: string;
   isSelected: boolean;
@@ -35,22 +35,24 @@ export const useBooking = () => {
 // Generate 100 seats across 5 cabins (20 seats each)
 const generateSeats = (): Seat[] => {
   const seats: Seat[] = [];
-  let seatId = 1;
+  let globalSeatId = 1;
 
   for (let cabin = 1; cabin <= 5; cabin++) {
-    for (let row = 1; row <= 5; row++) {
-      for (let position of ['A', 'B', 'C', 'D'] as const) {
+    let cabinSeatNumber = 1;
+    for (let row = 1; row <= 10; row++) {
+      for (let column of [1, 2] as const) {
         seats.push({
-          id: `${cabin}-${row}${position}`,
+          id: `${cabin}-${cabinSeatNumber}`,
           cabin,
-          seatNumber: seatId,
+          seatNumber: cabinSeatNumber,
           row,
-          position,
+          column,
           isBooked: Math.random() > 0.7, // Randomly book some seats for demo
           bookedBy: Math.random() > 0.7 ? 'other-user' : undefined,
           isSelected: false
         });
-        seatId++;
+        cabinSeatNumber++;
+        globalSeatId++;
       }
     }
   }
