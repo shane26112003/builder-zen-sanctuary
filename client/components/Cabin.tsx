@@ -37,7 +37,7 @@ const getCabinInfo = (cabinNumber: number) => {
 
 export const Cabin: React.FC<CabinProps> = ({ cabinNumber, seats }) => {
   const cabinInfo = getCabinInfo(cabinNumber);
-  
+
   // Group seats by row
   const seatsByRow = seats.reduce((acc, seat) => {
     if (!acc[seat.row]) {
@@ -47,9 +47,9 @@ export const Cabin: React.FC<CabinProps> = ({ cabinNumber, seats }) => {
     return acc;
   }, {} as Record<number, SeatType[]>);
 
-  // Sort seats within each row by position
+  // Sort seats within each row by column
   Object.keys(seatsByRow).forEach(row => {
-    seatsByRow[Number(row)].sort((a, b) => a.position.localeCompare(b.position));
+    seatsByRow[Number(row)].sort((a, b) => a.column - b.column);
   });
 
   const availableSeats = seats.filter(seat => !seat.isBooked).length;
@@ -68,30 +68,26 @@ export const Cabin: React.FC<CabinProps> = ({ cabinNumber, seats }) => {
         </div>
         <p className="text-sm text-gray-600">{cabinInfo.description}</p>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2">
         {Object.keys(seatsByRow)
           .sort((a, b) => Number(a) - Number(b))
           .map(row => {
             const rowSeats = seatsByRow[Number(row)];
-            const leftSeats = rowSeats.filter(seat => ['A', 'B'].includes(seat.position));
-            const rightSeats = rowSeats.filter(seat => ['C', 'D'].includes(seat.position));
-            
+            const leftSeat = rowSeats.find(seat => seat.column === 1);
+            const rightSeat = rowSeats.find(seat => seat.column === 2);
+
             return (
               <div key={row} className="flex items-center justify-between">
-                <div className="flex space-x-1">
-                  {leftSeats.map(seat => (
-                    <SeatComponent key={seat.id} seat={seat} />
-                  ))}
+                <div className="w-10 flex justify-center">
+                  {leftSeat && <SeatComponent key={leftSeat.id} seat={leftSeat} />}
                 </div>
-                
-                <div className="text-xs text-gray-500 font-medium px-3">
+
+                <div className="text-xs text-gray-500 font-medium px-4">
                   Row {row}
                 </div>
-                
-                <div className="flex space-x-1">
-                  {rightSeats.map(seat => (
-                    <SeatComponent key={seat.id} seat={seat} />
-                  ))}
+
+                <div className="w-10 flex justify-center">
+                  {rightSeat && <SeatComponent key={rightSeat.id} seat={rightSeat} />}
                 </div>
               </div>
             );

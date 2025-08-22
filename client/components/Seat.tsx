@@ -46,7 +46,7 @@ export const Seat: React.FC<SeatProps> = ({ seat, className }) => {
       )}
       onClick={handleClick}
     >
-      {seat.position}
+      {seat.seatNumber}
     </div>
   );
 
