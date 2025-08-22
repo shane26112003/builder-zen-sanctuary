@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetroReserve - Metro Seat Reservation System</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-content">
+            <div class="brand-section">
+                <div class="brand-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect width="16" height="6" x="2" y="3" rx="1"/>
+                        <path d="m2 3 10 6 10-6"/>
+                        <path d="M12 17v4"/>
+                        <path d="M8 21h8"/>
+                    </svg>
+                </div>
+                <h1 class="brand-title">MetroReserve</h1>
+                <p class="brand-subtitle">Secure your journey with us</p>
+            </div>
+
+            <div class="login-card">
+                <div class="card-header">
+                    <h2 class="card-title">Sign In</h2>
+                    <p class="card-description">Enter your credentials to access the metro reservation system</p>
+                </div>
+                
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div id="errorMessage" class="error-message" style="display: none;">
+                        Invalid credentials. Password must be at least 6 characters.
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="loginBtn">
+                        <span id="loginText">Sign In</span>
+                        <span id="loadingText" style="display: none;">Signing In...</span>
+                    </button>
+                </form>
+                
+                <div class="demo-info">
+                    <p>Demo: Use any email and password (min 6 characters)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/scripts/auth.js"></script>
+    <script>
+        // Initialize login functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loadingText = document.getElementById('loadingText');
+            const errorMessage = document.getElementById('errorMessage');
+
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // Show loading state
+                loginBtn.disabled = true;
+                loginText.style.display = 'none';
+                loadingText.style.display = 'inline';
+                errorMessage.style.display = 'none';
+                
+                // Simple validation
+                if (password.length >= 6) {
+                    // Store user data
+                    const userData = {
+                        id: Date.now().toString(),
+                        email: email,
+                        userType: 'general',
+                        hasLuggage: false
+                    };
+                    
+                    localStorage.setItem('metroUser', JSON.stringify(userData));
+                    
+                    // Redirect to user type selection
+                    window.location.href = '/user-type.html';
+                } else {
+                    // Show error
+                    errorMessage.style.display = 'block';
+                    
+                    // Reset loading state
+                    loginBtn.disabled = false;
+                    loginText.style.display = 'inline';
+                    loadingText.style.display = 'none';
+                }
+            });
+            
+            // Check if user is already logged in
+            const storedUser = localStorage.getItem('metroUser');
+            if (storedUser) {
+                const user = JSON.parse(storedUser);
+                if (user.userType === 'general') {
+                    window.location.href = '/user-type.html';
+                } else {
+                    window.location.href = '/booking.html';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
