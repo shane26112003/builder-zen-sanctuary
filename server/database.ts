@@ -8,7 +8,7 @@ const supabaseKey = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // PostgreSQL pool for direct database operations
-const databaseUrl = process.env.DATABASE_URL || 'postgresql://postgres:S1u2p3!@db.raqgobqbkgrhvcucrbhk.supabase.co:5432/postgres';
+const databaseUrl = process.env.DATABASE_URL || 'postgresql://postgres:S1u2p3%21%40@db.raqgobqbkgrhvcucrbhk.supabase.co:5432/postgres';
 
 export const pool = new Pool({
   connectionString: databaseUrl,
