@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MetroReserve</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="brand-section">
+                <div class="brand-icon small">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect width="16" height="6" x="2" y="3" rx="1"/>
+                        <path d="m2 3 10 6 10-6"/>
+                        <path d="M12 17v4"/>
+                        <path d="M8 21h8"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="header-title">MetroReserve Admin</h1>
+                    <p class="header-subtitle">Administrative Dashboard</p>
+                </div>
+            </div>
+            
+            <div class="admin-actions">
+                <button class="btn btn-secondary" id="refreshDataBtn">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Refresh Data
+                </button>
+                <a href="/public/index.html" class="btn btn-primary">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Back to App
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="admin-container">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="totalPassengers">0</h3>
+                        <p class="stat-label">Total Passengers</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="totalBookings">0</h3>
+                        <p class="stat-label">Total Bookings</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="totalRevenue">$0</h3>
+                        <p class="stat-label">Total Revenue</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-value" id="bookingsToday">0</h3>
+                        <p class="stat-label">Bookings Today</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="content-grid">
+                <!-- Passenger Management -->
+                <div class="content-section">
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h2 class="section-title">Passenger Management</h2>
+                            <div class="section-actions">
+                                <button class="btn btn-secondary" id="exportPassengersBtn">
+                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    Export
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Search and Filter -->
+                        <div class="search-section">
+                            <div class="search-group">
+                                <input type="text" id="searchInput" class="search-input" placeholder="Search by email...">
+                                <select id="userTypeFilter" class="filter-select">
+                                    <option value="all">All Types</option>
+                                    <option value="general">General</option>
+                                    <option value="women">Women</option>
+                                    <option value="elderly">Elderly</option>
+                                    <option value="disabled">Disabled</option>
+                                    <option value="pregnant">Pregnant</option>
+                                </select>
+                                <button class="btn btn-primary" id="searchBtn">Search</button>
+                            </div>
+                        </div>
+
+                        <!-- Passengers Table -->
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Type</th>
+                                        <th>Luggage</th>
+                                        <th>Bookings</th>
+                                        <th>Total Spent</th>
+                                        <th>Joined</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="passengersTableBody">
+                                    <tr>
+                                        <td colspan="6" class="loading-row">Loading passengers...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabin Occupancy -->
+                <div class="content-section">
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h2 class="section-title">Cabin Occupancy</h2>
+                        </div>
+                        
+                        <div class="cabin-stats" id="cabinStats">
+                            <!-- Cabin stats will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Recent Bookings -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h2 class="section-title">Recent Bookings</h2>
+                        </div>
+                        
+                        <div class="recent-bookings" id="recentBookings">
+                            <div class="loading-message">Loading recent bookings...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/scripts/admin.js"></script>
+</body>
+</html>
