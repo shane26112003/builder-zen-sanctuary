@@ -21,28 +21,30 @@ class SeatsManager {
         this.updateUserBookingsDisplay();
     }
 
-    initializeSeats() {
-        this.seats = [];
-        let globalSeatId = 1;
+    async initializeSeats() {
+        try {
+            const response = await fetch('/api/seats');
+            const data = await response.json();
 
-        for (let cabin = 1; cabin <= 5; cabin++) {
-            let cabinSeatNumber = 1;
-            for (let row = 1; row <= 10; row++) {
-                for (let column = 1; column <= 2; column++) {
-                    this.seats.push({
-                        id: `${cabin}-${cabinSeatNumber}`,
-                        cabin,
-                        seatNumber: cabinSeatNumber,
-                        row,
-                        column,
-                        isBooked: Math.random() > 0.7, // Randomly book some seats for demo
-                        bookedBy: Math.random() > 0.7 ? 'other-user' : null,
-                        isSelected: false
-                    });
-                    cabinSeatNumber++;
-                    globalSeatId++;
-                }
+            if (data.success && data.seats) {
+                this.seats = data.seats.map(seat => ({
+                    id: seat.id,
+                    cabin: seat.cabin,
+                    seatNumber: seat.seat_number,
+                    row: seat.row_number,
+                    column: seat.column_number,
+                    isBooked: seat.is_booked,
+                    bookedBy: seat.booked_by,
+                    isSelected: false
+                }));
+            } else {
+                console.error('Failed to load seats:', data.error);
+                // Fallback to empty seats array
+                this.seats = [];
             }
+        } catch (error) {
+            console.error('Error loading seats:', error);
+            this.seats = [];
         }
     }
 
