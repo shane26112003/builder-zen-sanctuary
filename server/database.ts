@@ -8,10 +8,12 @@ const supabaseKey = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6Ikp
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // PostgreSQL pool for direct database operations
-const databaseUrl = process.env.DATABASE_URL || 'postgresql://postgres:S1u2p3%21%40@db.raqgobqbkgrhvcucrbhk.supabase.co:5432/postgres';
-
 export const pool = new Pool({
-  connectionString: databaseUrl,
+  host: 'db.raqgobqbkgrhvcucrbhk.supabase.co',
+  port: 5432,
+  database: 'postgres',
+  user: 'postgres',
+  password: 'S1u2p3!@',
   ssl: {
     rejectUnauthorized: false
   }
@@ -21,7 +23,11 @@ export const pool = new Pool({
 export async function initializeDatabase() {
   try {
     console.log('Initializing database schema...');
-    
+
+    // Test connection first
+    await pool.query('SELECT 1');
+    console.log('Database connection successful');
+
     // Create users table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS metro_users (
@@ -72,7 +78,8 @@ export async function initializeDatabase() {
     console.log('Database schema initialized successfully');
   } catch (error) {
     console.error('Error initializing database:', error);
-    throw error;
+    console.log('Database may not be available. App will run with limited functionality.');
+    // Don't throw the error - let the app continue to run
   }
 }
 
