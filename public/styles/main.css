@@ -656,13 +656,15 @@ body {
     }
 }
 
-/* Train animation on hover */
-.brand-icon:hover .train-logo {
-    animation: trainMove 1s ease-in-out;
+/* Metro animation on hover */
+.brand-icon:hover .metro-logo {
+    animation: metroMove 1.2s ease-in-out;
 }
 
-@keyframes trainMove {
+@keyframes metroMove {
     0% { transform: translateX(0); }
-    50% { transform: translateX(5px); }
+    25% { transform: translateX(8px); }
+    50% { transform: translateX(0); }
+    75% { transform: translateX(-3px); }
     100% { transform: translateX(0); }
 }
