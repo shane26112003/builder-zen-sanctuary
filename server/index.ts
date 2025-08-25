@@ -3,7 +3,11 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { handleDemo } from "./routes/demo";
-import { handleLogin, handleUpdateUserType, handleCreateProfile } from "./routes/auth";
+import {
+  handleLogin,
+  handleUpdateUserType,
+  handleCreateProfile,
+} from "./routes/auth";
 import {
   handleGetSeats,
   handleBookSeats,

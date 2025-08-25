@@ -71,7 +71,12 @@
             <span>or</span>
           </div>
 
-          <button type="button" class="btn btn-secondary" id="signupBtn" style="width: 100%; margin-bottom: 1rem;">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            id="signupBtn"
+            style="width: 100%; margin-bottom: 1rem"
+          >
             Create New Account
           </button>
 
@@ -84,12 +89,13 @@
 
     <!-- Supabase Auth SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <script>
       // Initialize Supabase client
       const { createClient } = supabase;
-      const supabaseUrl = 'https://raqgobqbkgrhvcucrbhk.supabase.co';
-      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhcWdvYnFia2dyaHZjdWNyYmhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4NDY0NTksImV4cCI6MjA3MTQyMjQ1OX0.XTGQmu8WNg8wg-qFyJnfLYN-uLxhPnCLfT6f4MZ8VzY';
+      const supabaseUrl = "https://raqgobqbkgrhvcucrbhk.supabase.co";
+      const supabaseKey =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhcWdvYnFia2dyaHZjdWNyYmhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4NDY0NTksImV4cCI6MjA3MTQyMjQ1OX0.XTGQmu8WNg8wg-qFyJnfLYN-uLxhPnCLfT6f4MZ8VzY";
       const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
       // Enhanced Auth Manager with Supabase
@@ -102,7 +108,9 @@
 
         async init() {
           // Check for existing session
-          const { data: { session } } = await supabaseClient.auth.getSession();
+          const {
+            data: { session },
+          } = await supabaseClient.auth.getSession();
           if (session) {
             this.session = session;
             this.user = session.user;
@@ -113,8 +121,8 @@
           supabaseClient.auth.onAuthStateChange((event, session) => {
             this.session = session;
             this.user = session?.user || null;
-            
-            if (event === 'SIGNED_IN' && session) {
+
+            if (event === "SIGNED_IN" && session) {
               this.redirectBasedOnUser();
             }
           });
@@ -122,20 +130,21 @@
 
         async signIn(email, password) {
           try {
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-              email,
-              password
-            });
+            const { data, error } =
+              await supabaseClient.auth.signInWithPassword({
+                email,
+                password,
+              });
 
             if (error) {
-              console.error('Sign in error:', error);
+              console.error("Sign in error:", error);
               return { success: false, error: error.message };
             }
 
             return { success: true, user: data.user };
           } catch (error) {
-            console.error('Sign in error:', error);
-            return { success: false, error: 'An unexpected error occurred' };
+            console.error("Sign in error:", error);
+            return { success: false, error: "An unexpected error occurred" };
           }
         }
 
@@ -143,11 +152,11 @@
           try {
             const { data, error } = await supabaseClient.auth.signUp({
               email,
-              password
+              password,
             });
 
             if (error) {
-              console.error('Sign up error:', error);
+              console.error("Sign up error:", error);
               return { success: false, error: error.message };
             }
 
@@ -156,34 +165,34 @@
               try {
                 await this.createUserProfile(data.user.id, email);
               } catch (profileError) {
-                console.warn('Could not create user profile:', profileError);
+                console.warn("Could not create user profile:", profileError);
               }
             }
 
             return { success: true, user: data.user };
           } catch (error) {
-            console.error('Sign up error:', error);
-            return { success: false, error: 'An unexpected error occurred' };
+            console.error("Sign up error:", error);
+            return { success: false, error: "An unexpected error occurred" };
           }
         }
 
         async createUserProfile(userId, email) {
-          const response = await fetch('/api/auth/create-profile', {
-            method: 'POST',
+          const response = await fetch("/api/auth/create-profile", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${this.session?.access_token}`
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${this.session?.access_token}`,
             },
             body: JSON.stringify({
               userId,
               email,
-              userType: 'general',
-              hasLuggage: false
-            })
+              userType: "general",
+              hasLuggage: false,
+            }),
           });
 
           if (!response.ok) {
-            throw new Error('Failed to create user profile');
+            throw new Error("Failed to create user profile");
           }
 
           return response.json();
@@ -192,14 +201,14 @@
         async signOut() {
           const { error } = await supabaseClient.auth.signOut();
           if (error) {
-            console.error('Sign out error:', error);
+            console.error("Sign out error:", error);
             return false;
           }
-          
+
           // Clear local storage
           localStorage.removeItem("metroUser");
           localStorage.removeItem("userBookings");
-          
+
           return true;
         }
 
@@ -268,18 +277,20 @@
         });
 
         // Sign up button handler
-        signupBtn.addEventListener("click", async function() {
+        signupBtn.addEventListener("click", async function () {
           const email = document.getElementById("email").value;
           const password = document.getElementById("password").value;
 
           if (!email || !password) {
-            errorMessage.textContent = "Please enter email and password to create an account";
+            errorMessage.textContent =
+              "Please enter email and password to create an account";
             errorMessage.style.display = "block";
             return;
           }
 
           if (password.length < 6) {
-            errorMessage.textContent = "Password must be at least 6 characters long";
+            errorMessage.textContent =
+              "Password must be at least 6 characters long";
             errorMessage.style.display = "block";
             return;
           }
@@ -297,9 +308,10 @@
             errorMessage.style.backgroundColor = "#f0f9ff";
             errorMessage.style.borderColor = "#bae6fd";
             errorMessage.style.color = "#0369a1";
-            errorMessage.textContent = "Account created successfully! Please check your email to verify your account, then sign in.";
+            errorMessage.textContent =
+              "Account created successfully! Please check your email to verify your account, then sign in.";
             errorMessage.style.display = "block";
-            
+
             // Clear form
             document.getElementById("email").value = "";
             document.getElementById("password").value = "";

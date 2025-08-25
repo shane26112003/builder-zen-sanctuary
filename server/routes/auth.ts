@@ -109,7 +109,12 @@ export const handleUpdateUserType: RequestHandler = async (req, res) => {
 // Create user profile for Supabase auth users
 export const handleCreateProfile: RequestHandler = async (req, res) => {
   try {
-    const { userId, email, userType = "general", hasLuggage = false } = req.body;
+    const {
+      userId,
+      email,
+      userType = "general",
+      hasLuggage = false,
+    } = req.body;
 
     if (!userId || !email) {
       return res.status(400).json({

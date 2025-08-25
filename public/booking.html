@@ -1,165 +1,238 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Seat Booking - MetroReserve</title>
-    <link rel="stylesheet" href="/styles/main.css">
-    <link rel="stylesheet" href="/styles/booking.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="stylesheet" href="/styles/booking.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <!-- Header -->
     <header class="booking-header">
-        <div class="header-content">
-            <div class="brand-section">
-                <div class="brand-icon small">
-                    <div class="mrs-logo">
-                        <span class="mrs-text">MRS</span>
-                        <div class="mrs-underline"></div>
-                    </div>
-                </div>
-                <div>
-                    <h1 class="header-title">MetroReserve</h1>
-                    <p class="header-subtitle">Seat Reservation System</p>
-                </div>
+      <div class="header-content">
+        <div class="brand-section">
+          <div class="brand-icon small">
+            <div class="mrs-logo">
+              <span class="mrs-text">MRS</span>
+              <div class="mrs-underline"></div>
             </div>
-            
-            <div class="user-info">
-                <div class="user-details">
-                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                    <span id="userEmail">user@example.com</span>
-                    <span class="user-type-badge" id="userTypeBadge">General</span>
-                </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="btn btn-secondary" onclick="window.location.href='/my-bookings.html'" style="padding: 0.5rem 1rem; font-size: 0.875rem; height: auto;">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        My Bookings
-                    </button>
-                    <button class="btn btn-secondary" id="logoutBtn" style="padding: 0.5rem 1rem; font-size: 0.875rem; height: auto;">
-                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
-                        Logout
-                    </button>
-                </div>
-            </div>
+          </div>
+          <div>
+            <h1 class="header-title">MetroReserve</h1>
+            <p class="header-subtitle">Seat Reservation System</p>
+          </div>
         </div>
+
+        <div class="user-info">
+          <div class="user-details">
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
+            </svg>
+            <span id="userEmail">user@example.com</span>
+            <span class="user-type-badge" id="userTypeBadge">General</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem">
+            <button
+              class="btn btn-secondary"
+              onclick="window.location.href='/my-bookings.html'"
+              style="padding: 0.5rem 1rem; font-size: 0.875rem; height: auto"
+            >
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              My Bookings
+            </button>
+            <button
+              class="btn btn-secondary"
+              id="logoutBtn"
+              style="padding: 0.5rem 1rem; font-size: 0.875rem; height: auto"
+            >
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
     </header>
 
     <main class="booking-main">
-        <div class="booking-container">
-            <div class="booking-grid">
-                <!-- Seat Selection Area -->
-                <div class="seat-selection-area">
-                    <div class="section-header text-center">
-                        <h2 class="section-title">Select Your Seats</h2>
-                        <p class="section-subtitle">Choose from available seats across our metro cabins</p>
-                    </div>
-
-                    <!-- Legend -->
-                    <div class="legend-card">
-                        <div class="legend-items">
-                            <div class="legend-item">
-                                <div class="seat-demo available"></div>
-                                <span>Available</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="seat-demo selected"></div>
-                                <span>Selected</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="seat-demo booked"></div>
-                                <span>Booked</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="seat-demo restricted"></div>
-                                <span>Restricted</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Cabins Grid -->
-                    <div class="cabins-grid" id="cabinsGrid">
-                        <!-- Cabins will be generated here by JavaScript -->
-                    </div>
-                </div>
-
-                <!-- Booking Sidebar -->
-                <div class="booking-sidebar">
-                    <!-- Selected Seats -->
-                    <div class="sidebar-card">
-                        <div class="card-header">
-                            <h3 class="card-title">Selected Seats</h3>
-                        </div>
-                        <div class="card-content">
-                            <div id="selectedSeatsList">
-                                <p class="no-selection">No seats selected</p>
-                            </div>
-                            <div id="bookingTotal" style="display: none;">
-                                <div class="booking-separator"></div>
-                                <div class="total-row">
-                                    <span>Total (<span id="seatCount">0</span> seats)</span>
-                                    <span>$<span id="totalAmount">0</span></span>
-                                </div>
-                                <button class="btn btn-primary" id="bookSeatsBtn">
-                                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-                                    </svg>
-                                    Book Seats
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- User Bookings -->
-                    <div class="sidebar-card" id="userBookingsCard" style="display: none;">
-                        <div class="card-header">
-                            <h3 class="card-title">
-                                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #10b981;">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                Your Bookings
-                            </h3>
-                        </div>
-                        <div class="card-content">
-                            <div id="userBookingsList">
-                                <!-- User bookings will be populated here -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Passenger Info -->
-                    <div class="sidebar-card">
-                        <div class="card-header">
-                            <h3 class="card-title">Passenger Info</h3>
-                        </div>
-                        <div class="card-content">
-                            <div class="info-item">
-                                <p class="info-label">Type</p>
-                                <p class="info-value" id="passengerType">General Passenger</p>
-                            </div>
-                            <div class="info-item" id="luggageInfo" style="display: none;">
-                                <p class="info-label">Special Requirements</p>
-                                <p class="info-value">Heavy Luggage</p>
-                            </div>
-                            <div class="access-info" id="accessInfo">
-                                <p>You can book seats in Cabins 3, 4, and 5</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+      <div class="booking-container">
+        <div class="booking-grid">
+          <!-- Seat Selection Area -->
+          <div class="seat-selection-area">
+            <div class="section-header text-center">
+              <h2 class="section-title">Select Your Seats</h2>
+              <p class="section-subtitle">
+                Choose from available seats across our metro cabins
+              </p>
             </div>
+
+            <!-- Legend -->
+            <div class="legend-card">
+              <div class="legend-items">
+                <div class="legend-item">
+                  <div class="seat-demo available"></div>
+                  <span>Available</span>
+                </div>
+                <div class="legend-item">
+                  <div class="seat-demo selected"></div>
+                  <span>Selected</span>
+                </div>
+                <div class="legend-item">
+                  <div class="seat-demo booked"></div>
+                  <span>Booked</span>
+                </div>
+                <div class="legend-item">
+                  <div class="seat-demo restricted"></div>
+                  <span>Restricted</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cabins Grid -->
+            <div class="cabins-grid" id="cabinsGrid">
+              <!-- Cabins will be generated here by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Booking Sidebar -->
+          <div class="booking-sidebar">
+            <!-- Selected Seats -->
+            <div class="sidebar-card">
+              <div class="card-header">
+                <h3 class="card-title">Selected Seats</h3>
+              </div>
+              <div class="card-content">
+                <div id="selectedSeatsList">
+                  <p class="no-selection">No seats selected</p>
+                </div>
+                <div id="bookingTotal" style="display: none">
+                  <div class="booking-separator"></div>
+                  <div class="total-row">
+                    <span>Total (<span id="seatCount">0</span> seats)</span>
+                    <span>$<span id="totalAmount">0</span></span>
+                  </div>
+                  <button class="btn btn-primary" id="bookSeatsBtn">
+                    <svg
+                      width="16"
+                      height="16"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                      />
+                    </svg>
+                    Book Seats
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- User Bookings -->
+            <div
+              class="sidebar-card"
+              id="userBookingsCard"
+              style="display: none"
+            >
+              <div class="card-header">
+                <h3 class="card-title">
+                  <svg
+                    width="20"
+                    height="20"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    style="color: #10b981"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  Your Bookings
+                </h3>
+              </div>
+              <div class="card-content">
+                <div id="userBookingsList">
+                  <!-- User bookings will be populated here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Passenger Info -->
+            <div class="sidebar-card">
+              <div class="card-header">
+                <h3 class="card-title">Passenger Info</h3>
+              </div>
+              <div class="card-content">
+                <div class="info-item">
+                  <p class="info-label">Type</p>
+                  <p class="info-value" id="passengerType">General Passenger</p>
+                </div>
+                <div class="info-item" id="luggageInfo" style="display: none">
+                  <p class="info-label">Special Requirements</p>
+                  <p class="info-value">Heavy Luggage</p>
+                </div>
+                <div class="access-info" id="accessInfo">
+                  <p>You can book seats in Cabins 3, 4, and 5</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </main>
 
     <script src="/scripts/booking.js"></script>
     <script src="/scripts/seats.js"></script>
-</body>
+  </body>
 </html>
