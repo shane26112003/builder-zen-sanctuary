@@ -18,17 +18,37 @@
         <div class="brand-section">
           <div class="brand-icon">
             <svg
-              width="40"
-              height="40"
-              viewBox="0 0 24 24"
+              width="48"
+              height="48"
+              viewBox="0 0 48 48"
               fill="none"
               stroke="currentColor"
               stroke-width="2"
+              class="train-logo"
             >
-              <rect width="16" height="6" x="2" y="3" rx="1" />
-              <path d="m2 3 10 6 10-6" />
-              <path d="M12 17v4" />
-              <path d="M8 21h8" />
+              <!-- Train Engine -->
+              <rect x="4" y="20" width="16" height="12" rx="2" fill="currentColor" stroke="none"/>
+              <!-- Train Cars -->
+              <rect x="24" y="22" width="12" height="8" rx="1" fill="currentColor" stroke="none"/>
+              <rect x="38" y="22" width="6" height="8" rx="1" fill="currentColor" stroke="none"/>
+              <!-- Wheels -->
+              <circle cx="8" cy="34" r="2" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="16" cy="34" r="2" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="28" cy="34" r="2" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="36" cy="34" r="2" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="41" cy="34" r="2" fill="none" stroke="currentColor" stroke-width="2"/>
+              <!-- Engine Details -->
+              <rect x="2" y="18" width="4" height="4" rx="1" fill="currentColor" stroke="none"/>
+              <rect x="6" y="24" width="2" height="2" rx="0.5" fill="none" stroke="currentColor" stroke-width="1"/>
+              <rect x="10" y="24" width="2" height="2" rx="0.5" fill="none" stroke="currentColor" stroke-width="1"/>
+              <rect x="14" y="24" width="2" height="2" rx="0.5" fill="none" stroke="currentColor" stroke-width="1"/>
+              <!-- Connection Lines -->
+              <line x1="20" y1="26" x2="24" y2="26" stroke="currentColor" stroke-width="2"/>
+              <line x1="36" y1="26" x2="38" y2="26" stroke="currentColor" stroke-width="2"/>
+              <!-- Smoke -->
+              <circle cx="8" cy="14" r="1.5" fill="currentColor" opacity="0.6"/>
+              <circle cx="10" cy="12" r="1" fill="currentColor" opacity="0.4"/>
+              <circle cx="12" cy="10" r="0.8" fill="currentColor" opacity="0.3"/>
             </svg>
           </div>
           <h1 class="brand-title">MetroReserve</h1>
@@ -67,7 +87,7 @@
             </div>
 
             <div id="errorMessage" class="error-message" style="display: none">
-              Invalid credentials. Password must be at least 6 characters.
+              Invalid credentials. Please check your email and password.
             </div>
 
             <button type="submit" class="btn btn-primary" id="loginBtn">
@@ -76,23 +96,177 @@
             </button>
           </form>
 
+          <div class="auth-divider">
+            <span>or</span>
+          </div>
+
+          <button type="button" class="btn btn-secondary" id="signupBtn" style="width: 100%; margin-bottom: 1rem;">
+            Create New Account
+          </button>
+
           <div class="demo-info">
-            <p>Demo: Use any email and password (min 6 characters)</p>
+            <p>New to MetroReserve? Create an account to get started</p>
           </div>
         </div>
       </div>
     </div>
 
-    <script src="/scripts/auth.js"></script>
+    <!-- Supabase Auth SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
-      // Initialize login functionality
+      // Initialize Supabase client
+      const { createClient } = supabase;
+      const supabaseUrl = 'https://raqgobqbkgrhvcucrbhk.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhcWdvYnFia2dyaHZjdWNyYmhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4NDY0NTksImV4cCI6MjA3MTQyMjQ1OX0.XTGQmu8WNg8wg-qFyJnfLYN-uLxhPnCLfT6f4MZ8VzY';
+      const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+      // Enhanced Auth Manager with Supabase
+      class SupabaseAuthManager {
+        constructor() {
+          this.user = null;
+          this.session = null;
+          this.init();
+        }
+
+        async init() {
+          // Check for existing session
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          if (session) {
+            this.session = session;
+            this.user = session.user;
+            this.redirectBasedOnUser();
+          }
+
+          // Listen for auth changes
+          supabaseClient.auth.onAuthStateChange((event, session) => {
+            this.session = session;
+            this.user = session?.user || null;
+            
+            if (event === 'SIGNED_IN' && session) {
+              this.redirectBasedOnUser();
+            }
+          });
+        }
+
+        async signIn(email, password) {
+          try {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+              email,
+              password
+            });
+
+            if (error) {
+              console.error('Sign in error:', error);
+              return { success: false, error: error.message };
+            }
+
+            return { success: true, user: data.user };
+          } catch (error) {
+            console.error('Sign in error:', error);
+            return { success: false, error: 'An unexpected error occurred' };
+          }
+        }
+
+        async signUp(email, password) {
+          try {
+            const { data, error } = await supabaseClient.auth.signUp({
+              email,
+              password
+            });
+
+            if (error) {
+              console.error('Sign up error:', error);
+              return { success: false, error: error.message };
+            }
+
+            // Create user profile in metro_users table
+            if (data.user) {
+              try {
+                await this.createUserProfile(data.user.id, email);
+              } catch (profileError) {
+                console.warn('Could not create user profile:', profileError);
+              }
+            }
+
+            return { success: true, user: data.user };
+          } catch (error) {
+            console.error('Sign up error:', error);
+            return { success: false, error: 'An unexpected error occurred' };
+          }
+        }
+
+        async createUserProfile(userId, email) {
+          const response = await fetch('/api/auth/create-profile', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.session?.access_token}`
+            },
+            body: JSON.stringify({
+              userId,
+              email,
+              userType: 'general',
+              hasLuggage: false
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error('Failed to create user profile');
+          }
+
+          return response.json();
+        }
+
+        async signOut() {
+          const { error } = await supabaseClient.auth.signOut();
+          if (error) {
+            console.error('Sign out error:', error);
+            return false;
+          }
+          
+          // Clear local storage
+          localStorage.removeItem("metroUser");
+          localStorage.removeItem("userBookings");
+          
+          return true;
+        }
+
+        redirectBasedOnUser() {
+          if (this.user) {
+            // For now, redirect to user type selection
+            // Later we can check user profile to see if they've already selected their type
+            window.location.href = "/user-type.html";
+          }
+        }
+
+        getUser() {
+          return this.user;
+        }
+
+        getSession() {
+          return this.session;
+        }
+
+        isAuthenticated() {
+          return !!this.user;
+        }
+      }
+
+      // Initialize auth manager
+      const authManager = new SupabaseAuthManager();
+      window.authManager = authManager;
+
+      // DOM event handlers
       document.addEventListener("DOMContentLoaded", function () {
         const loginForm = document.getElementById("loginForm");
         const loginBtn = document.getElementById("loginBtn");
+        const signupBtn = document.getElementById("signupBtn");
         const loginText = document.getElementById("loginText");
         const loadingText = document.getElementById("loadingText");
         const errorMessage = document.getElementById("errorMessage");
 
+        // Sign in form handler
         loginForm.addEventListener("submit", async function (e) {
           e.preventDefault();
 
@@ -105,20 +279,14 @@
           loadingText.style.display = "inline";
           errorMessage.style.display = "none";
 
-          // Authenticate via API
-          const success = await window.authManager.login(email, password);
+          // Attempt sign in
+          const result = await authManager.signIn(email, password);
 
-          if (success) {
-            const user = window.authManager.getUser();
-            if (user.userType === "general") {
-              // Redirect to user type selection
-              window.location.href = "/user-type.html";
-            } else {
-              // Redirect directly to booking
-              window.location.href = "/booking.html";
-            }
+          if (result.success) {
+            // Success - authManager will handle redirect
           } else {
             // Show error
+            errorMessage.textContent = result.error;
             errorMessage.style.display = "block";
 
             // Reset loading state
@@ -128,16 +296,52 @@
           }
         });
 
-        // Check if user is already logged in
-        const storedUser = localStorage.getItem("metroUser");
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          if (user.userType === "general") {
-            window.location.href = "/user-type.html";
-          } else {
-            window.location.href = "/booking.html";
+        // Sign up button handler
+        signupBtn.addEventListener("click", async function() {
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          if (!email || !password) {
+            errorMessage.textContent = "Please enter email and password to create an account";
+            errorMessage.style.display = "block";
+            return;
           }
-        }
+
+          if (password.length < 6) {
+            errorMessage.textContent = "Password must be at least 6 characters long";
+            errorMessage.style.display = "block";
+            return;
+          }
+
+          // Show loading state
+          signupBtn.disabled = true;
+          signupBtn.textContent = "Creating Account...";
+          errorMessage.style.display = "none";
+
+          // Attempt sign up
+          const result = await authManager.signUp(email, password);
+
+          if (result.success) {
+            // Show success message
+            errorMessage.style.backgroundColor = "#f0f9ff";
+            errorMessage.style.borderColor = "#bae6fd";
+            errorMessage.style.color = "#0369a1";
+            errorMessage.textContent = "Account created successfully! Please check your email to verify your account, then sign in.";
+            errorMessage.style.display = "block";
+            
+            // Clear form
+            document.getElementById("email").value = "";
+            document.getElementById("password").value = "";
+          } else {
+            // Show error
+            errorMessage.textContent = result.error;
+            errorMessage.style.display = "block";
+          }
+
+          // Reset loading state
+          signupBtn.disabled = false;
+          signupBtn.textContent = "Create New Account";
+        });
       });
     </script>
   </body>
