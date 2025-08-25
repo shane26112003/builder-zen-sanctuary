@@ -243,16 +243,42 @@ body {
     }
 }
 
-/* Responsive metro logo */
+/* Small MRS Logo for Headers */
+.brand-icon.small {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius-lg);
+}
+
+.brand-icon.small .mrs-logo {
+    width: 50px;
+    height: 50px;
+}
+
+.brand-icon.small .mrs-text {
+    font-size: 1.2rem;
+    letter-spacing: -1px;
+}
+
+.brand-icon.small .mrs-underline {
+    height: 2px;
+    margin-top: 1px;
+}
+
+/* Responsive MRS logo */
 @media (max-width: 768px) {
     .brand-icon {
         width: 4rem;
         height: 4rem;
     }
 
-    .metro-logo {
-        width: 36px;
-        height: 36px;
+    .mrs-logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .mrs-text {
+        font-size: 2rem;
     }
 }
 
@@ -262,9 +288,13 @@ body {
         height: 3.5rem;
     }
 
-    .metro-logo {
-        width: 32px;
-        height: 32px;
+    .mrs-logo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .mrs-text {
+        font-size: 1.8rem;
     }
 }
 
@@ -714,15 +744,33 @@ body {
     }
 }
 
-/* Metro animation on hover */
-.brand-icon:hover .metro-logo {
-    animation: logoSpin 1s ease-in-out;
+/* MRS animation on hover */
+.brand-icon:hover .mrs-logo {
+    animation: mrsHover 0.6s ease-in-out;
 }
 
-@keyframes logoSpin {
+.brand-icon:hover .mrs-text {
+    animation: textGlow 0.6s ease-in-out;
+}
+
+.brand-icon:hover .mrs-underline {
+    animation: underlinePulse 0.6s ease-in-out;
+}
+
+@keyframes mrsHover {
     0% { transform: scale(1) translateY(0); }
-    25% { transform: scale(1.05) translateY(-1px); }
-    50% { transform: scale(1.08) translateY(-2px); }
-    75% { transform: scale(1.05) translateY(-1px); }
+    50% { transform: scale(1.1) translateY(-2px); }
     100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes textGlow {
+    0% { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
+    50% { text-shadow: 0 4px 12px rgba(255, 255, 255, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3); }
+    100% { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
+}
+
+@keyframes underlinePulse {
+    0% { transform: scaleX(1); }
+    50% { transform: scaleX(1.2); background: linear-gradient(90deg, #ffffff 0%, #f1f5f9 50%, #ffffff 100%); }
+    100% { transform: scaleX(1); }
 }
