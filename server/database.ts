@@ -45,7 +45,7 @@ export async function initializeDatabase() {
 // Initialize seats data
 async function initializeSeats() {
   const seats = [];
-  
+
   for (let cabin = 1; cabin <= 5; cabin++) {
     let seatNumber = 1;
     for (let row = 1; row <= 10; row++) {
@@ -63,141 +63,182 @@ async function initializeSeats() {
     }
   }
 
-  // Insert seats in batches
-  for (const seat of seats) {
-    await pool.query(
-      'INSERT INTO metro_seats (id, cabin, seat_number, row_number, column_number, is_booked) VALUES ($1, $2, $3, $4, $5, $6)',
-      [seat.id, seat.cabin, seat.seat_number, seat.row_number, seat.column_number, seat.is_booked]
-    );
-  }
+  // Insert seats using Supabase client
+  const { data, error } = await supabase
+    .from('metro_seats')
+    .insert(seats);
 
-  console.log(`Initialized ${seats.length} seats`);
+  if (error) {
+    console.error('Error inserting seats:', error);
+  } else {
+    console.log(`Initialized ${seats.length} seats`);
+  }
 }
 
-// Database queries
+// Database queries using Supabase client
 export const db = {
   // User operations
   async createUser(email: string, passwordHash: string, userType: string, hasLuggage: boolean) {
-    const result = await pool.query(
-      'INSERT INTO metro_users (email, password_hash, user_type, has_luggage) VALUES ($1, $2, $3, $4) RETURNING *',
-      [email, passwordHash, userType, hasLuggage]
-    );
-    return result.rows[0];
+    const { data, error } = await supabase
+      .from('metro_users')
+      .insert([{
+        email,
+        password_hash: passwordHash,
+        user_type: userType,
+        has_luggage: hasLuggage
+      }])
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
   },
 
   async getUserByEmail(email: string) {
-    const result = await pool.query('SELECT * FROM metro_users WHERE email = $1', [email]);
-    return result.rows[0];
+    const { data, error } = await supabase
+      .from('metro_users')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (error && error.code !== 'PGRST116') return null;
+    return data;
   },
 
   async getAllUsers() {
-    const result = await pool.query(`
-      SELECT 
-        u.*,
-        COUNT(b.id) as total_bookings,
-        COALESCE(SUM(b.amount), 0) as total_spent
-      FROM metro_users u
-      LEFT JOIN metro_bookings b ON u.id = b.user_id AND b.status = 'confirmed'
-      GROUP BY u.id
-      ORDER BY u.created_at DESC
-    `);
-    return result.rows;
+    const { data, error } = await supabase
+      .from('metro_users')
+      .select(`
+        *,
+        metro_bookings(id, amount, status)
+      `);
+
+    if (error) throw error;
+
+    // Calculate totals
+    return data.map(user => ({
+      ...user,
+      total_bookings: user.metro_bookings?.filter(b => b.status === 'confirmed').length || 0,
+      total_spent: user.metro_bookings?.filter(b => b.status === 'confirmed').reduce((sum, b) => sum + parseFloat(b.amount), 0) || 0
+    }));
   },
 
   // Seat operations
   async getAllSeats() {
-    const result = await pool.query(`
-      SELECT 
-        s.*,
-        u.email as booked_by_email,
-        u.user_type as booked_by_type
-      FROM metro_seats s
-      LEFT JOIN metro_users u ON s.booked_by = u.id
-      ORDER BY s.cabin, s.seat_number
-    `);
-    return result.rows;
+    const { data, error } = await supabase
+      .from('metro_seats')
+      .select(`
+        *,
+        booked_by_user:metro_users(email, user_type)
+      `)
+      .order('cabin')
+      .order('seat_number');
+
+    if (error) throw error;
+    return data;
   },
 
   async getSeatsByCabin(cabin: number) {
-    const result = await pool.query(
-      'SELECT * FROM metro_seats WHERE cabin = $1 ORDER BY seat_number',
-      [cabin]
-    );
-    return result.rows;
+    const { data, error } = await supabase
+      .from('metro_seats')
+      .select('*')
+      .eq('cabin', cabin)
+      .order('seat_number');
+
+    if (error) throw error;
+    return data;
   },
 
   async bookSeats(userId: string, seatIds: string[]) {
-    const client = await pool.connect();
     try {
-      await client.query('BEGIN');
-      
       // Update seats
-      for (const seatId of seatIds) {
-        await client.query(
-          'UPDATE metro_seats SET is_booked = TRUE, booked_by = $1 WHERE id = $2 AND is_booked = FALSE',
-          [userId, seatId]
-        );
-      }
-      
+      const { error: updateError } = await supabase
+        .from('metro_seats')
+        .update({ is_booked: true, booked_by: userId })
+        .in('id', seatIds)
+        .eq('is_booked', false);
+
+      if (updateError) throw updateError;
+
       // Create bookings
-      for (const seatId of seatIds) {
-        await client.query(
-          'INSERT INTO metro_bookings (user_id, seat_id) VALUES ($1, $2)',
-          [userId, seatId]
-        );
-      }
-      
-      await client.query('COMMIT');
+      const bookings = seatIds.map(seatId => ({
+        user_id: userId,
+        seat_id: seatId,
+        amount: 25.00
+      }));
+
+      const { error: bookingError } = await supabase
+        .from('metro_bookings')
+        .insert(bookings);
+
+      if (bookingError) throw bookingError;
+
       return { success: true, bookedSeats: seatIds.length };
     } catch (error) {
-      await client.query('ROLLBACK');
       throw error;
-    } finally {
-      client.release();
     }
   },
 
   async getUserBookings(userId: string) {
-    const result = await pool.query(`
-      SELECT 
-        b.*,
-        s.cabin,
-        s.seat_number,
-        s.row_number,
-        s.column_number
-      FROM metro_bookings b
-      JOIN metro_seats s ON b.seat_id = s.id
-      WHERE b.user_id = $1 AND b.status = 'confirmed'
-      ORDER BY b.booking_date DESC
-    `, [userId]);
-    return result.rows;
+    const { data, error } = await supabase
+      .from('metro_bookings')
+      .select(`
+        *,
+        metro_seats(cabin, seat_number, row_number, column_number)
+      `)
+      .eq('user_id', userId)
+      .eq('status', 'confirmed')
+      .order('booking_date', { ascending: false });
+
+    if (error) throw error;
+    return data;
   },
 
   // Admin queries
   async getBookingStats() {
-    const result = await pool.query(`
-      SELECT 
-        COUNT(*) as total_bookings,
-        COUNT(DISTINCT user_id) as unique_passengers,
-        SUM(amount) as total_revenue,
-        COUNT(*) FILTER (WHERE booking_date >= NOW() - INTERVAL '24 hours') as bookings_today
-      FROM metro_bookings
-      WHERE status = 'confirmed'
-    `);
-    return result.rows[0];
+    const { data: bookings, error } = await supabase
+      .from('metro_bookings')
+      .select('*')
+      .eq('status', 'confirmed');
+
+    if (error) throw error;
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const stats = {
+      total_bookings: bookings.length,
+      unique_passengers: new Set(bookings.map(b => b.user_id)).size,
+      total_revenue: bookings.reduce((sum, b) => sum + parseFloat(b.amount), 0),
+      bookings_today: bookings.filter(b => new Date(b.booking_date) >= today).length
+    };
+
+    return stats;
   },
 
   async getCabinOccupancy() {
-    const result = await pool.query(`
-      SELECT 
-        cabin,
-        COUNT(*) as total_seats,
-        COUNT(*) FILTER (WHERE is_booked = true) as booked_seats,
-        ROUND((COUNT(*) FILTER (WHERE is_booked = true) * 100.0 / COUNT(*)), 1) as occupancy_rate
-      FROM metro_seats
-      GROUP BY cabin
-      ORDER BY cabin
-    `);
-    return result.rows;
+    const { data: seats, error } = await supabase
+      .from('metro_seats')
+      .select('*');
+
+    if (error) throw error;
+
+    const cabinStats = {};
+    seats.forEach(seat => {
+      if (!cabinStats[seat.cabin]) {
+        cabinStats[seat.cabin] = { total: 0, booked: 0 };
+      }
+      cabinStats[seat.cabin].total++;
+      if (seat.is_booked) {
+        cabinStats[seat.cabin].booked++;
+      }
+    });
+
+    return Object.keys(cabinStats).map(cabin => ({
+      cabin: parseInt(cabin),
+      total_seats: cabinStats[cabin].total,
+      booked_seats: cabinStats[cabin].booked,
+      occupancy_rate: ((cabinStats[cabin].booked / cabinStats[cabin].total) * 100).toFixed(1)
+    }));
   }
 };

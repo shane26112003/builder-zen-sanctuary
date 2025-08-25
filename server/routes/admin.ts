@@ -45,26 +45,32 @@ export const handleGetBookingStats: RequestHandler = async (req, res) => {
 
 export const handleGetRecentBookings: RequestHandler = async (req, res) => {
   try {
-    const result = await db.pool.query(`
-      SELECT 
-        b.id,
-        b.booking_date,
-        b.amount,
-        u.email,
-        u.user_type,
-        s.cabin,
-        s.seat_number
-      FROM metro_bookings b
-      JOIN metro_users u ON b.user_id = u.id
-      JOIN metro_seats s ON b.seat_id = s.id
-      WHERE b.status = 'confirmed'
-      ORDER BY b.booking_date DESC
-      LIMIT 50
-    `);
+    const { data, error } = await supabase
+      .from('metro_bookings')
+      .select(`
+        id,
+        booking_date,
+        amount,
+        metro_users(email, user_type),
+        metro_seats(cabin, seat_number)
+      `)
+      .eq('status', 'confirmed')
+      .order('booking_date', { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
 
     res.json({
       success: true,
-      recent_bookings: result.rows
+      recent_bookings: data.map(booking => ({
+        id: booking.id,
+        booking_date: booking.booking_date,
+        amount: booking.amount,
+        email: booking.metro_users?.email,
+        user_type: booking.metro_users?.user_type,
+        cabin: booking.metro_seats?.cabin,
+        seat_number: booking.metro_seats?.seat_number
+      }))
     });
   } catch (error) {
     console.error('Get recent bookings error:', error);
@@ -75,45 +81,37 @@ export const handleGetRecentBookings: RequestHandler = async (req, res) => {
 export const handleSearchPassengers: RequestHandler = async (req, res) => {
   try {
     const { query, userType } = req.query;
-    
-    let sqlQuery = `
-      SELECT 
-        u.*,
-        COUNT(b.id) as total_bookings,
-        COALESCE(SUM(b.amount), 0) as total_spent
-      FROM metro_users u
-      LEFT JOIN metro_bookings b ON u.id = b.user_id AND b.status = 'confirmed'
-      WHERE 1=1
-    `;
-    
-    const params: any[] = [];
-    let paramIndex = 1;
+
+    let supabaseQuery = supabase
+      .from('metro_users')
+      .select(`
+        *,
+        metro_bookings(id, amount, status)
+      `)
+      .order('created_at', { ascending: false })
+      .limit(100);
 
     if (query) {
-      sqlQuery += ` AND u.email ILIKE $${paramIndex}`;
-      params.push(`%${query}%`);
-      paramIndex++;
+      supabaseQuery = supabaseQuery.ilike('email', `%${query}%`);
     }
 
     if (userType && userType !== 'all') {
-      sqlQuery += ` AND u.user_type = $${paramIndex}`;
-      params.push(userType);
-      paramIndex++;
+      supabaseQuery = supabaseQuery.eq('user_type', userType);
     }
 
-    sqlQuery += ` GROUP BY u.id ORDER BY u.created_at DESC LIMIT 100`;
+    const { data, error } = await supabaseQuery;
 
-    const result = await db.pool.query(sqlQuery, params);
-    
+    if (error) throw error;
+
     res.json({
       success: true,
-      passengers: result.rows.map(user => ({
+      passengers: data.map(user => ({
         id: user.id,
         email: user.email,
         user_type: user.user_type,
         has_luggage: user.has_luggage,
-        total_bookings: parseInt(user.total_bookings) || 0,
-        total_spent: parseFloat(user.total_spent) || 0,
+        total_bookings: user.metro_bookings?.filter(b => b.status === 'confirmed').length || 0,
+        total_spent: user.metro_bookings?.filter(b => b.status === 'confirmed').reduce((sum, b) => sum + parseFloat(b.amount), 0) || 0,
         created_at: user.created_at
       }))
     });
