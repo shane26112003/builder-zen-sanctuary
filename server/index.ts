@@ -8,6 +8,8 @@ import {
   handleGetSeats,
   handleBookSeats,
   handleGetUserBookings,
+  handleCancelBooking,
+  handleGetBookingTicket,
   handleGetCabinInfo,
 } from "./routes/booking";
 import {
