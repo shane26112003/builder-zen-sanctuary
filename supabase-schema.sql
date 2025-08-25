@@ -41,6 +41,8 @@ CREATE INDEX IF NOT EXISTS idx_metro_seats_cabin ON metro_seats(cabin);
 CREATE INDEX IF NOT EXISTS idx_metro_seats_booked ON metro_seats(is_booked);
 CREATE INDEX IF NOT EXISTS idx_metro_bookings_user ON metro_bookings(user_id);
 CREATE INDEX IF NOT EXISTS idx_metro_bookings_date ON metro_bookings(booking_date);
+CREATE INDEX IF NOT EXISTS idx_metro_bookings_status ON metro_bookings(status);
+CREATE INDEX IF NOT EXISTS idx_metro_bookings_cancelled_at ON metro_bookings(cancelled_at) WHERE cancelled_at IS NOT NULL;
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE metro_users ENABLE ROW LEVEL SECURITY;
