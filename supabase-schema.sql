@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS metro_bookings (
   seat_id VARCHAR(20) NOT NULL REFERENCES metro_seats(id) ON DELETE CASCADE,
   booking_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   amount DECIMAL(10,2) DEFAULT 25.00,
-  status VARCHAR(20) DEFAULT 'confirmed' CHECK (status IN ('confirmed', 'cancelled'))
+  status VARCHAR(20) DEFAULT 'confirmed' CHECK (status IN ('confirmed', 'cancelled')),
+  cancelled_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
 );
 
 -- Create indexes for better performance
