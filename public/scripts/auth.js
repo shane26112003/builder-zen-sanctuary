@@ -1,4 +1,4 @@
-// Authentication Module
+// Authentication Module with Database Integration
 class AuthManager {
     constructor() {
         this.user = null;
@@ -12,26 +12,36 @@ class AuthManager {
         }
     }
 
-    login(email, password) {
-        return new Promise((resolve) => {
-            // Simple demo authentication
-            setTimeout(() => {
-                if (password.length >= 6) {
-                    const userData = {
-                        id: Date.now().toString(),
-                        email: email,
-                        userType: 'general',
-                        hasLuggage: false
-                    };
-                    
-                    this.user = userData;
-                    localStorage.setItem('metroUser', JSON.stringify(userData));
-                    resolve(true);
-                } else {
-                    resolve(false);
-                }
-            }, 500); // Simulate API delay
-        });
+    async login(email, password) {
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.user) {
+                // Convert database user format to frontend format
+                this.user = {
+                    id: data.user.id,
+                    email: data.user.email,
+                    userType: data.user.user_type,
+                    hasLuggage: data.user.has_luggage
+                };
+
+                localStorage.setItem('metroUser', JSON.stringify(this.user));
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            return false;
+        }
     }
 
     logout() {
@@ -40,11 +50,40 @@ class AuthManager {
         localStorage.removeItem('userBookings');
     }
 
-    updateUserType(userType, hasLuggage) {
-        if (this.user) {
-            this.user.userType = userType;
-            this.user.hasLuggage = hasLuggage;
-            localStorage.setItem('metroUser', JSON.stringify(this.user));
+    async updateUserType(userType, hasLuggage) {
+        if (!this.user) return false;
+
+        try {
+            const response = await fetch('/api/auth/update-user-type', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: this.user.id,
+                    userType: userType,
+                    hasLuggage: hasLuggage
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.user) {
+                this.user = {
+                    id: data.user.id,
+                    email: data.user.email,
+                    userType: data.user.user_type,
+                    hasLuggage: data.user.has_luggage
+                };
+
+                localStorage.setItem('metroUser', JSON.stringify(this.user));
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.error('Update user type error:', error);
+            return false;
         }
     }
 

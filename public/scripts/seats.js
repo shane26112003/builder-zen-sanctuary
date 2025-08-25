@@ -6,12 +6,19 @@ class SeatsManager {
         this.userBookings = [];
         this.user = null;
         this.seatPrice = 25;
-        
-        this.initializeSeats();
+
+        this.init();
+    }
+
+    async init() {
         this.loadUserData();
-        this.loadUserBookings();
+        await this.initializeSeats();
+        await this.loadUserBookings();
         this.renderCabins();
         this.bindEvents();
+        this.updateUserInfo();
+        this.updateSelectedSeatsDisplay();
+        this.updateUserBookingsDisplay();
     }
 
     initializeSeats() {
@@ -46,19 +53,28 @@ class SeatsManager {
         }
     }
 
-    loadUserBookings() {
-        const stored = localStorage.getItem('userBookings');
-        if (stored && this.user) {
-            this.userBookings = JSON.parse(stored);
-            
-            // Update seats to reflect user bookings
-            this.seats.forEach(seat => {
-                const userBooking = this.userBookings.find(b => b.id === seat.id);
-                if (userBooking) {
-                    seat.isBooked = true;
-                    seat.bookedBy = this.user.id;
-                }
-            });
+    async loadUserBookings() {
+        if (!this.user) return;
+
+        try {
+            const response = await fetch(`/api/bookings/${this.user.id}`);
+            const data = await response.json();
+
+            if (data.success && data.bookings) {
+                this.userBookings = data.bookings.map(booking => ({
+                    id: booking.seat_id,
+                    cabin: booking.cabin,
+                    seatNumber: booking.seat_number,
+                    row: booking.row_number,
+                    column: booking.column_number,
+                    isBooked: true,
+                    bookedBy: this.user.id,
+                    isSelected: false
+                }));
+            }
+        } catch (error) {
+            console.error('Error loading user bookings:', error);
+            this.userBookings = [];
         }
     }
 
@@ -149,44 +165,81 @@ class SeatsManager {
         this.renderSeat(seat);
     }
 
-    bookSelectedSeats() {
+    async bookSelectedSeats() {
         if (!this.user || this.selectedSeats.length === 0) return;
 
-        const seatsToBook = this.selectedSeats.map(seat => ({
-            ...seat,
-            isBooked: true,
-            bookedBy: this.user.id,
-            isSelected: false
-        }));
+        const bookBtn = document.getElementById('bookSeatsBtn');
+        const originalText = bookBtn.innerHTML;
 
-        // Update seats
-        this.seats.forEach(seat => {
-            const bookedSeat = seatsToBook.find(s => s.id === seat.id);
-            if (bookedSeat) {
-                Object.assign(seat, bookedSeat);
+        // Show loading state
+        bookBtn.disabled = true;
+        bookBtn.innerHTML = `
+            <div class="loading-spinner"></div>
+            Booking...
+        `;
+
+        try {
+            const seatIds = this.selectedSeats.map(seat => seat.id);
+
+            const response = await fetch('/api/seats/book', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userId: this.user.id,
+                    seatIds: seatIds
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update seats to reflect booking
+                this.seats.forEach(seat => {
+                    if (seatIds.includes(seat.id)) {
+                        seat.isBooked = true;
+                        seat.bookedBy = this.user.id;
+                        seat.isSelected = false;
+                    }
+                });
+
+                // Add to user bookings
+                const newBookings = this.selectedSeats.map(seat => ({
+                    ...seat,
+                    isBooked: true,
+                    bookedBy: this.user.id,
+                    isSelected: false
+                }));
+                this.userBookings = [...this.userBookings, ...newBookings];
+
+                // Clear selected seats
+                this.selectedSeats = [];
+
+                // Update displays
+                this.updateSelectedSeatsDisplay();
+                this.updateUserBookingsDisplay();
+                this.renderCabins();
+
+                // Show success message
+                this.showBookingSuccess();
+            } else {
+                this.showBookingError(data.error || 'Booking failed');
             }
-        });
-
-        // Update user bookings
-        this.userBookings = [...this.userBookings, ...seatsToBook];
-        localStorage.setItem('userBookings', JSON.stringify(this.userBookings));
-
-        // Clear selected seats
-        this.selectedSeats = [];
-
-        // Update displays
-        this.updateSelectedSeatsDisplay();
-        this.updateUserBookingsDisplay();
-        this.renderCabins();
-
-        // Show success message
-        this.showBookingSuccess();
+        } catch (error) {
+            console.error('Booking error:', error);
+            this.showBookingError('Network error. Please try again.');
+        } finally {
+            // Reset button
+            bookBtn.disabled = false;
+            bookBtn.innerHTML = originalText;
+        }
     }
 
     showBookingSuccess() {
         const bookBtn = document.getElementById('bookSeatsBtn');
         const originalText = bookBtn.innerHTML;
-        
+
         bookBtn.innerHTML = `
             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -194,11 +247,35 @@ class SeatsManager {
             Booked Successfully!
         `;
         bookBtn.classList.add('booking-success');
-        
+
         setTimeout(() => {
             bookBtn.innerHTML = originalText;
             bookBtn.classList.remove('booking-success');
         }, 2000);
+    }
+
+    showBookingError(message) {
+        // Create error message element
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'booking-error';
+        errorDiv.innerHTML = `
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            ${message}
+        `;
+
+        // Find booking sidebar and insert error message
+        const sidebar = document.querySelector('.booking-sidebar');
+        const firstCard = sidebar.querySelector('.sidebar-card');
+        sidebar.insertBefore(errorDiv, firstCard);
+
+        // Remove error message after 5 seconds
+        setTimeout(() => {
+            if (errorDiv.parentNode) {
+                errorDiv.remove();
+            }
+        }, 5000);
     }
 
     renderCabins() {
