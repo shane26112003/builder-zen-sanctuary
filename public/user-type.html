@@ -189,18 +189,19 @@
 
             // Handle form submission
             const userTypeForm = document.getElementById('userTypeForm');
-            userTypeForm.addEventListener('submit', function(e) {
+            userTypeForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
-                // Update user data
+                // Update user data via API
                 const user = JSON.parse(storedUser);
-                user.userType = selectedType;
-                user.hasLuggage = hasLuggage;
+                const success = await window.authManager.updateUserType(selectedType, hasLuggage);
 
-                localStorage.setItem('metroUser', JSON.stringify(user));
-
-                // Redirect to booking page
-                window.location.href = '/booking.html';
+                if (success) {
+                    // Redirect to booking page
+                    window.location.href = '/booking.html';
+                } else {
+                    alert('Failed to update user type. Please try again.');
+                }
             });
         });
     </script>

@@ -71,34 +71,32 @@
 
             loginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                
+
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
-                
+
                 // Show loading state
                 loginBtn.disabled = true;
                 loginText.style.display = 'none';
                 loadingText.style.display = 'inline';
                 errorMessage.style.display = 'none';
-                
-                // Simple validation
-                if (password.length >= 6) {
-                    // Store user data
-                    const userData = {
-                        id: Date.now().toString(),
-                        email: email,
-                        userType: 'general',
-                        hasLuggage: false
-                    };
-                    
-                    localStorage.setItem('metroUser', JSON.stringify(userData));
-                    
-                    // Redirect to user type selection
-                    window.location.href = '/user-type.html';
+
+                // Authenticate via API
+                const success = await window.authManager.login(email, password);
+
+                if (success) {
+                    const user = window.authManager.getUser();
+                    if (user.userType === 'general') {
+                        // Redirect to user type selection
+                        window.location.href = '/user-type.html';
+                    } else {
+                        // Redirect directly to booking
+                        window.location.href = '/booking.html';
+                    }
                 } else {
                     // Show error
                     errorMessage.style.display = 'block';
-                    
+
                     // Reset loading state
                     loginBtn.disabled = false;
                     loginText.style.display = 'inline';
