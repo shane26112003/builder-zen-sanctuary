@@ -3,11 +3,17 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { handleDemo } from "./routes/demo";
-import { handleLogin, handleUpdateUserType } from "./routes/auth";
+import {
+  handleLogin,
+  handleUpdateUserType,
+  handleCreateProfile,
+} from "./routes/auth";
 import {
   handleGetSeats,
   handleBookSeats,
   handleGetUserBookings,
+  handleCancelBooking,
+  handleGetBookingTicket,
   handleGetCabinInfo,
 } from "./routes/booking";
 import {
@@ -42,11 +48,14 @@ export function createServer() {
   // Authentication routes
   app.post("/api/auth/login", handleLogin);
   app.post("/api/auth/update-user-type", handleUpdateUserType);
+  app.post("/api/auth/create-profile", handleCreateProfile);
 
   // Booking routes
   app.get("/api/seats", handleGetSeats);
   app.post("/api/seats/book", handleBookSeats);
   app.get("/api/bookings/:userId", handleGetUserBookings);
+  app.post("/api/bookings/:bookingId/cancel", handleCancelBooking);
+  app.get("/api/bookings/:bookingId/ticket", handleGetBookingTicket);
   app.get("/api/cabins/info", handleGetCabinInfo);
 
   // Admin routes
