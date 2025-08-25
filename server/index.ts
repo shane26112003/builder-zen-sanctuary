@@ -50,6 +50,8 @@ export function createServer() {
   app.get("/api/seats", handleGetSeats);
   app.post("/api/seats/book", handleBookSeats);
   app.get("/api/bookings/:userId", handleGetUserBookings);
+  app.post("/api/bookings/:bookingId/cancel", handleCancelBooking);
+  app.get("/api/bookings/:bookingId/ticket", handleGetBookingTicket);
   app.get("/api/cabins/info", handleGetCabinInfo);
 
   // Admin routes
