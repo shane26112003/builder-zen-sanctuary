@@ -17,6 +17,7 @@
     --gray-100: #f3f4f6;
     --gray-200: #e5e7eb;
     --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
     --gray-600: #4b5563;
     --gray-700: #374151;
     --gray-800: #1f2937;
@@ -151,6 +152,59 @@ body {
     border-radius: var(--radius-full);
     margin-bottom: var(--space-4);
     color: var(--white);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.brand-icon:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Train Logo Styles */
+.train-logo {
+    width: 48px;
+    height: 48px;
+    color: var(--white);
+    animation: trainEntry 0.8s ease-out;
+}
+
+@keyframes trainEntry {
+    0% {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive train logo */
+@media (max-width: 768px) {
+    .brand-icon {
+        width: 4rem;
+        height: 4rem;
+    }
+    
+    .train-logo {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-icon {
+        width: 3.5rem;
+        height: 3.5rem;
+    }
+    
+    .train-logo {
+        width: 32px;
+        height: 32px;
+    }
 }
 
 .brand-title {
@@ -191,7 +245,7 @@ body {
 }
 
 .login-form {
-    padding: 0 var(--space-6) var(--space-6);
+    padding: 0 var(--space-6) var(--space-4);
 }
 
 .form-group {
@@ -261,6 +315,27 @@ body {
     transform: none;
 }
 
+.btn-secondary {
+    background-color: var(--white);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+    padding: var(--space-3) var(--space-6);
+    height: 2.75rem;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: var(--gray-50);
+    border-color: var(--gray-400);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .error-message {
     background-color: #fef2f2;
     border: 1px solid #fecaca;
@@ -271,8 +346,30 @@ body {
     margin-bottom: var(--space-4);
 }
 
+/* Auth divider */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: var(--space-4) var(--space-6);
+    color: var(--gray-500);
+    font-size: var(--font-size-sm);
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--gray-200);
+}
+
+.auth-divider span {
+    padding: 0 var(--space-4);
+}
+
 .demo-info {
-    margin-top: var(--space-6);
+    margin: var(--space-4) var(--space-6) var(--space-6);
     text-align: center;
     font-size: var(--font-size-sm);
     color: var(--gray-600);
@@ -473,19 +570,6 @@ body {
     padding-top: var(--space-4);
 }
 
-.btn-secondary {
-    background-color: var(--white);
-    color: var(--gray-700);
-    border: 1px solid var(--gray-300);
-    padding: var(--space-3) var(--space-6);
-    height: 2.75rem;
-}
-
-.btn-secondary:hover {
-    background-color: var(--gray-50);
-    border-color: var(--gray-400);
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .user-type-content {
@@ -502,6 +586,39 @@ body {
     
     .user-type-label {
         padding: var(--space-3);
+    }
+
+    .brand-title {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .login-content {
+        max-width: 24rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: var(--space-2);
+    }
+    
+    .login-content {
+        max-width: 100%;
+    }
+    
+    .brand-title {
+        font-size: var(--font-size-xl);
+    }
+    
+    .brand-subtitle {
+        font-size: var(--font-size-sm);
+    }
+    
+    .card-header,
+    .login-form,
+    .demo-info {
+        padding-left: var(--space-4);
+        padding-right: var(--space-4);
     }
 }
 
@@ -534,4 +651,15 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Train animation on hover */
+.brand-icon:hover .train-logo {
+    animation: trainMove 1s ease-in-out;
+}
+
+@keyframes trainMove {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
 }
