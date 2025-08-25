@@ -42,6 +42,7 @@ export function createServer() {
   // Authentication routes
   app.post("/api/auth/login", handleLogin);
   app.post("/api/auth/update-user-type", handleUpdateUserType);
+  app.post("/api/auth/create-profile", handleCreateProfile);
 
   // Booking routes
   app.get("/api/seats", handleGetSeats);
