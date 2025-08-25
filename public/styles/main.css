@@ -160,21 +160,24 @@ body {
     box-shadow: var(--shadow-lg);
 }
 
-/* Train Logo Styles */
-.train-logo {
+/* Metro Logo Styles */
+.metro-logo {
     width: 48px;
     height: 48px;
     color: var(--white);
-    animation: trainEntry 0.8s ease-out;
+    animation: metroEntry 1s ease-out;
 }
 
-@keyframes trainEntry {
+@keyframes metroEntry {
     0% {
-        transform: translateX(-100px);
+        transform: translateX(-120px);
         opacity: 0;
     }
-    50% {
-        opacity: 0.5;
+    60% {
+        opacity: 0.7;
+    }
+    80% {
+        transform: translateX(5px);
     }
     100% {
         transform: translateX(0);
@@ -182,14 +185,14 @@ body {
     }
 }
 
-/* Responsive train logo */
+/* Responsive metro logo */
 @media (max-width: 768px) {
     .brand-icon {
         width: 4rem;
         height: 4rem;
     }
-    
-    .train-logo {
+
+    .metro-logo {
         width: 36px;
         height: 36px;
     }
@@ -200,8 +203,8 @@ body {
         width: 3.5rem;
         height: 3.5rem;
     }
-    
-    .train-logo {
+
+    .metro-logo {
         width: 32px;
         height: 32px;
     }
