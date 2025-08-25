@@ -4,8 +4,18 @@ import cors from "cors";
 import path from "path";
 import { handleDemo } from "./routes/demo";
 import { handleLogin, handleUpdateUserType } from "./routes/auth";
-import { handleGetSeats, handleBookSeats, handleGetUserBookings, handleGetCabinInfo } from "./routes/booking";
-import { handleGetAllPassengers, handleGetBookingStats, handleGetRecentBookings, handleSearchPassengers } from "./routes/admin";
+import {
+  handleGetSeats,
+  handleBookSeats,
+  handleGetUserBookings,
+  handleGetCabinInfo,
+} from "./routes/booking";
+import {
+  handleGetAllPassengers,
+  handleGetBookingStats,
+  handleGetRecentBookings,
+  handleSearchPassengers,
+} from "./routes/admin";
 import { initializeDatabase } from "./database";
 
 export function createServer() {
@@ -17,11 +27,14 @@ export function createServer() {
   app.use(express.urlencoded({ extended: true }));
 
   // Serve static files from public directory
-  app.use('/public', express.static(path.join(process.cwd(), 'public')));
+  app.use("/public", express.static(path.join(process.cwd(), "public")));
 
   // Also serve public files at root for convenience
-  app.use('/styles', express.static(path.join(process.cwd(), 'public/styles')));
-  app.use('/scripts', express.static(path.join(process.cwd(), 'public/scripts')));
+  app.use("/styles", express.static(path.join(process.cwd(), "public/styles")));
+  app.use(
+    "/scripts",
+    express.static(path.join(process.cwd(), "public/scripts")),
+  );
 
   // Initialize database
   initializeDatabase().catch(console.error);

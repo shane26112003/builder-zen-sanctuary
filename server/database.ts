@@ -1,9 +1,12 @@
-import { createClient } from '@supabase/supabase-js';
-import { Pool } from 'pg';
+import { createClient } from "@supabase/supabase-js";
+import { Pool } from "pg";
 
 // Supabase configuration
-const supabaseUrl = process.env.SUPABASE_URL || 'https://raqgobqbkgrhvcucrbhk.supabase.co';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhcWdvYnFia2dyaHZjdWNyYmhrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTg0NjQ1OSwiZXhwIjoyMDcxNDIyNDU5fQ.oKq_BlIL1IDwIbV6kO4sbUS2W3tnULRfSmxaVU2NK_M';
+const supabaseUrl =
+  process.env.SUPABASE_URL || "https://raqgobqbkgrhvcucrbhk.supabase.co";
+const supabaseServiceKey =
+  process.env.SUPABASE_SERVICE_KEY ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhcWdvYnFia2dyaHZjdWNyYmhrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTg0NjQ1OSwiZXhwIjoyMDcxNDIyNDU5fQ.oKq_BlIL1IDwIbV6kO4sbUS2W3tnULRfSmxaVU2NK_M";
 
 export const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
@@ -13,32 +16,40 @@ export const pool = null; // Deprecated - using Supabase client instead
 // Database initialization using Supabase
 export async function initializeDatabase() {
   try {
-    console.log('Initializing database with Supabase...');
+    console.log("Initializing database with Supabase...");
 
     // Test connection
-    const { data, error } = await supabase.from('metro_users').select('count').limit(1);
-    if (error && error.code !== 'PGRST116') { // PGRST116 means table doesn't exist, which is fine
-      console.log('Database connection successful');
+    const { data, error } = await supabase
+      .from("metro_users")
+      .select("count")
+      .limit(1);
+    if (error && error.code !== "PGRST116") {
+      // PGRST116 means table doesn't exist, which is fine
+      console.log("Database connection successful");
     }
 
     // Check if seats table exists and has data
     const { data: seatData, error: seatError } = await supabase
-      .from('metro_seats')
-      .select('id')
+      .from("metro_seats")
+      .select("id")
       .limit(1);
 
-    if (seatError && seatError.code === 'PGRST116') {
-      console.log('Tables need to be created manually in Supabase dashboard');
-      console.log('Please create the tables using the SQL provided in the documentation');
+    if (seatError && seatError.code === "PGRST116") {
+      console.log("Tables need to be created manually in Supabase dashboard");
+      console.log(
+        "Please create the tables using the SQL provided in the documentation",
+      );
     } else if (!seatData || seatData.length === 0) {
-      console.log('Initializing seat data...');
+      console.log("Initializing seat data...");
       await initializeSeats();
     }
 
-    console.log('Database initialization completed');
+    console.log("Database initialization completed");
   } catch (error) {
-    console.error('Error initializing database:', error);
-    console.log('Database may not be available. App will run with limited functionality.');
+    console.error("Error initializing database:", error);
+    console.log(
+      "Database may not be available. App will run with limited functionality.",
+    );
   }
 }
 
@@ -56,7 +67,7 @@ async function initializeSeats() {
           seat_number: seatNumber,
           row_number: row,
           column_number: column,
-          is_booked: Math.random() > 0.8 // Randomly book some seats for demo
+          is_booked: Math.random() > 0.8, // Randomly book some seats for demo
         });
         seatNumber++;
       }
@@ -64,12 +75,10 @@ async function initializeSeats() {
   }
 
   // Insert seats using Supabase client
-  const { data, error } = await supabase
-    .from('metro_seats')
-    .insert(seats);
+  const { data, error } = await supabase.from("metro_seats").insert(seats);
 
   if (error) {
-    console.error('Error inserting seats:', error);
+    console.error("Error inserting seats:", error);
   } else {
     console.log(`Initialized ${seats.length} seats`);
   }
@@ -78,15 +87,22 @@ async function initializeSeats() {
 // Database queries using Supabase client
 export const db = {
   // User operations
-  async createUser(email: string, passwordHash: string, userType: string, hasLuggage: boolean) {
+  async createUser(
+    email: string,
+    passwordHash: string,
+    userType: string,
+    hasLuggage: boolean,
+  ) {
     const { data, error } = await supabase
-      .from('metro_users')
-      .insert([{
-        email,
-        password_hash: passwordHash,
-        user_type: userType,
-        has_luggage: hasLuggage
-      }])
+      .from("metro_users")
+      .insert([
+        {
+          email,
+          password_hash: passwordHash,
+          user_type: userType,
+          has_luggage: hasLuggage,
+        },
+      ])
       .select()
       .single();
 
@@ -96,19 +112,17 @@ export const db = {
 
   async getUserByEmail(email: string) {
     const { data, error } = await supabase
-      .from('metro_users')
-      .select('*')
-      .eq('email', email)
+      .from("metro_users")
+      .select("*")
+      .eq("email", email)
       .single();
 
-    if (error && error.code !== 'PGRST116') return null;
+    if (error && error.code !== "PGRST116") return null;
     return data;
   },
 
   async getAllUsers() {
-    const { data, error } = await supabase
-      .from('metro_users')
-      .select(`
+    const { data, error } = await supabase.from("metro_users").select(`
         *,
         metro_bookings(id, amount, status)
       `);
@@ -116,23 +130,30 @@ export const db = {
     if (error) throw error;
 
     // Calculate totals
-    return data.map(user => ({
+    return data.map((user) => ({
       ...user,
-      total_bookings: user.metro_bookings?.filter(b => b.status === 'confirmed').length || 0,
-      total_spent: user.metro_bookings?.filter(b => b.status === 'confirmed').reduce((sum, b) => sum + parseFloat(b.amount), 0) || 0
+      total_bookings:
+        user.metro_bookings?.filter((b) => b.status === "confirmed").length ||
+        0,
+      total_spent:
+        user.metro_bookings
+          ?.filter((b) => b.status === "confirmed")
+          .reduce((sum, b) => sum + parseFloat(b.amount), 0) || 0,
     }));
   },
 
   // Seat operations
   async getAllSeats() {
     const { data, error } = await supabase
-      .from('metro_seats')
-      .select(`
+      .from("metro_seats")
+      .select(
+        `
         *,
         booked_by_user:metro_users(email, user_type)
-      `)
-      .order('cabin')
-      .order('seat_number');
+      `,
+      )
+      .order("cabin")
+      .order("seat_number");
 
     if (error) throw error;
     return data;
@@ -140,10 +161,10 @@ export const db = {
 
   async getSeatsByCabin(cabin: number) {
     const { data, error } = await supabase
-      .from('metro_seats')
-      .select('*')
-      .eq('cabin', cabin)
-      .order('seat_number');
+      .from("metro_seats")
+      .select("*")
+      .eq("cabin", cabin)
+      .order("seat_number");
 
     if (error) throw error;
     return data;
@@ -153,22 +174,22 @@ export const db = {
     try {
       // Update seats
       const { error: updateError } = await supabase
-        .from('metro_seats')
+        .from("metro_seats")
         .update({ is_booked: true, booked_by: userId })
-        .in('id', seatIds)
-        .eq('is_booked', false);
+        .in("id", seatIds)
+        .eq("is_booked", false);
 
       if (updateError) throw updateError;
 
       // Create bookings
-      const bookings = seatIds.map(seatId => ({
+      const bookings = seatIds.map((seatId) => ({
         user_id: userId,
         seat_id: seatId,
-        amount: 25.00
+        amount: 25.0,
       }));
 
       const { error: bookingError } = await supabase
-        .from('metro_bookings')
+        .from("metro_bookings")
         .insert(bookings);
 
       if (bookingError) throw bookingError;
@@ -181,14 +202,16 @@ export const db = {
 
   async getUserBookings(userId: string) {
     const { data, error } = await supabase
-      .from('metro_bookings')
-      .select(`
+      .from("metro_bookings")
+      .select(
+        `
         *,
         metro_seats(cabin, seat_number, row_number, column_number)
-      `)
-      .eq('user_id', userId)
-      .eq('status', 'confirmed')
-      .order('booking_date', { ascending: false });
+      `,
+      )
+      .eq("user_id", userId)
+      .eq("status", "confirmed")
+      .order("booking_date", { ascending: false });
 
     if (error) throw error;
     return data;
@@ -197,9 +220,9 @@ export const db = {
   // Admin queries
   async getBookingStats() {
     const { data: bookings, error } = await supabase
-      .from('metro_bookings')
-      .select('*')
-      .eq('status', 'confirmed');
+      .from("metro_bookings")
+      .select("*")
+      .eq("status", "confirmed");
 
     if (error) throw error;
 
@@ -208,9 +231,10 @@ export const db = {
 
     const stats = {
       total_bookings: bookings.length,
-      unique_passengers: new Set(bookings.map(b => b.user_id)).size,
+      unique_passengers: new Set(bookings.map((b) => b.user_id)).size,
       total_revenue: bookings.reduce((sum, b) => sum + parseFloat(b.amount), 0),
-      bookings_today: bookings.filter(b => new Date(b.booking_date) >= today).length
+      bookings_today: bookings.filter((b) => new Date(b.booking_date) >= today)
+        .length,
     };
 
     return stats;
@@ -218,13 +242,13 @@ export const db = {
 
   async getCabinOccupancy() {
     const { data: seats, error } = await supabase
-      .from('metro_seats')
-      .select('*');
+      .from("metro_seats")
+      .select("*");
 
     if (error) throw error;
 
     const cabinStats = {};
-    seats.forEach(seat => {
+    seats.forEach((seat) => {
       if (!cabinStats[seat.cabin]) {
         cabinStats[seat.cabin] = { total: 0, booked: 0 };
       }
@@ -234,11 +258,14 @@ export const db = {
       }
     });
 
-    return Object.keys(cabinStats).map(cabin => ({
+    return Object.keys(cabinStats).map((cabin) => ({
       cabin: parseInt(cabin),
       total_seats: cabinStats[cabin].total,
       booked_seats: cabinStats[cabin].booked,
-      occupancy_rate: ((cabinStats[cabin].booked / cabinStats[cabin].total) * 100).toFixed(1)
+      occupancy_rate: (
+        (cabinStats[cabin].booked / cabinStats[cabin].total) *
+        100
+      ).toFixed(1),
     }));
-  }
+  },
 };

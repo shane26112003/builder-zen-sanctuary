@@ -1,209 +1,326 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Type Selection - MetroReserve</title>
-    <link rel="stylesheet" href="/styles/main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="user-type-container">
-        <div class="user-type-content">
-            <div class="page-header">
-                <h1 class="page-title">Tell us about yourself</h1>
-                <p class="page-subtitle">This helps us provide you with the best seating options</p>
-            </div>
-
-            <div class="selection-card fade-in">
-                <div class="selection-header">
-                    <h2 class="selection-title">Passenger Information</h2>
-                    <p class="selection-description">Select your category to access appropriate cabin reservations</p>
-                </div>
-
-                <div class="selection-content">
-                    <form id="userTypeForm">
-                        <div class="user-type-grid space-y-4">
-                            <div class="user-type-option" data-type="general">
-                                <div class="user-type-radio" id="radio-general"></div>
-                                <label class="user-type-label" for="radio-general">
-                                    <svg class="user-type-icon" style="color: #4b5563" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                    </svg>
-                                    <div class="user-type-info">
-                                        <h4>General Passenger</h4>
-                                        <p>Regular passenger with no special requirements</p>
-                                    </div>
-                                </label>
-                            </div>
-
-                            <div class="user-type-option" data-type="women">
-                                <div class="user-type-radio" id="radio-women"></div>
-                                <label class="user-type-label" for="radio-women">
-                                    <svg class="user-type-icon" style="color: #ec4899" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                    </svg>
-                                    <div class="user-type-info">
-                                        <h4>Woman Passenger</h4>
-                                        <p>Access to women-only cabin (Cabin 1)</p>
-                                    </div>
-                                </label>
-                            </div>
-
-                            <div class="user-type-option" data-type="elderly">
-                                <div class="user-type-radio" id="radio-elderly"></div>
-                                <label class="user-type-label" for="radio-elderly">
-                                    <svg class="user-type-icon" style="color: #ea580c" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                    </svg>
-                                    <div class="user-type-info">
-                                        <h4>Elderly Person</h4>
-                                        <p>Senior citizen with priority seating</p>
-                                    </div>
-                                </label>
-                            </div>
-
-                            <div class="user-type-option" data-type="disabled">
-                                <div class="user-type-radio" id="radio-disabled"></div>
-                                <label class="user-type-label" for="radio-disabled">
-                                    <svg class="user-type-icon" style="color: #2563eb" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <circle cx="12" cy="4" r="2"/>
-                                        <path d="M19 13v-2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2"/>
-                                        <path d="M19 13a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2"/>
-                                        <circle cx="8" cy="21" r="1"/>
-                                        <circle cx="16" cy="21" r="1"/>
-                                    </svg>
-                                    <div class="user-type-info">
-                                        <h4>Person with Disability</h4>
-                                        <p>Priority seating with wheelchair accessibility</p>
-                                    </div>
-                                </label>
-                            </div>
-
-                            <div class="user-type-option" data-type="pregnant">
-                                <div class="user-type-radio" id="radio-pregnant"></div>
-                                <label class="user-type-label" for="radio-pregnant">
-                                    <svg class="user-type-icon" style="color: #8b5cf6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                                    </svg>
-                                    <div class="user-type-info">
-                                        <h4>Pregnant Woman</h4>
-                                        <p>Expectant mother with priority access</p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="luggage-section">
-                            <div class="checkbox-wrapper" id="luggageCheckbox">
-                                <div class="checkbox" id="checkbox-luggage"></div>
-                                <label class="checkbox-label">
-                                    <svg style="color: #4b5563" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M9 5l6 0"/>
-                                    </svg>
-                                    <span>I am carrying heavy luggage</span>
-                                </label>
-                            </div>
-                            <p class="checkbox-description">
-                                This will help us recommend seats with more storage space
-                            </p>
-                        </div>
-
-                        <div class="action-section">
-                            <button type="submit" class="btn btn-primary">
-                                Continue to Seat Selection
-                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div class="space-y-4" style="margin-top: 2rem;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div style="background: white; padding: 1rem; border-radius: 0.75rem; box-shadow: var(--shadow-md);">
-                        <h3 style="font-weight: 600; color: #ec4899; margin-bottom: 0.5rem;">Women-Only Cabin</h3>
-                        <p style="font-size: 0.875rem; color: #4b5563;">Cabin 1 is exclusively reserved for women passengers for enhanced comfort and security.</p>
-                    </div>
-                    <div style="background: white; padding: 1rem; border-radius: 0.75rem; box-shadow: var(--shadow-md);">
-                        <h3 style="font-weight: 600; color: #2563eb; margin-bottom: 0.5rem;">Priority Cabin</h3>
-                        <p style="font-size: 0.875rem; color: #4b5563;">Cabin 2 is reserved for pregnant women, women with luggage, disabled persons, and elderly passengers.</p>
-                    </div>
-                </div>
-            </div>
+      <div class="user-type-content">
+        <div class="page-header">
+          <h1 class="page-title">Tell us about yourself</h1>
+          <p class="page-subtitle">
+            This helps us provide you with the best seating options
+          </p>
         </div>
+
+        <div class="selection-card fade-in">
+          <div class="selection-header">
+            <h2 class="selection-title">Passenger Information</h2>
+            <p class="selection-description">
+              Select your category to access appropriate cabin reservations
+            </p>
+          </div>
+
+          <div class="selection-content">
+            <form id="userTypeForm">
+              <div class="user-type-grid space-y-4">
+                <div class="user-type-option" data-type="general">
+                  <div class="user-type-radio" id="radio-general"></div>
+                  <label class="user-type-label" for="radio-general">
+                    <svg
+                      class="user-type-icon"
+                      style="color: #4b5563"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                    <div class="user-type-info">
+                      <h4>General Passenger</h4>
+                      <p>Regular passenger with no special requirements</p>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="user-type-option" data-type="women">
+                  <div class="user-type-radio" id="radio-women"></div>
+                  <label class="user-type-label" for="radio-women">
+                    <svg
+                      class="user-type-icon"
+                      style="color: #ec4899"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
+                    <div class="user-type-info">
+                      <h4>Woman Passenger</h4>
+                      <p>Access to women-only cabin (Cabin 1)</p>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="user-type-option" data-type="elderly">
+                  <div class="user-type-radio" id="radio-elderly"></div>
+                  <label class="user-type-label" for="radio-elderly">
+                    <svg
+                      class="user-type-icon"
+                      style="color: #ea580c"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                    <div class="user-type-info">
+                      <h4>Elderly Person</h4>
+                      <p>Senior citizen with priority seating</p>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="user-type-option" data-type="disabled">
+                  <div class="user-type-radio" id="radio-disabled"></div>
+                  <label class="user-type-label" for="radio-disabled">
+                    <svg
+                      class="user-type-icon"
+                      style="color: #2563eb"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle cx="12" cy="4" r="2" />
+                      <path d="M19 13v-2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2" />
+                      <path
+                        d="M19 13a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2"
+                      />
+                      <circle cx="8" cy="21" r="1" />
+                      <circle cx="16" cy="21" r="1" />
+                    </svg>
+                    <div class="user-type-info">
+                      <h4>Person with Disability</h4>
+                      <p>Priority seating with wheelchair accessibility</p>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="user-type-option" data-type="pregnant">
+                  <div class="user-type-radio" id="radio-pregnant"></div>
+                  <label class="user-type-label" for="radio-pregnant">
+                    <svg
+                      class="user-type-icon"
+                      style="color: #8b5cf6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                      />
+                    </svg>
+                    <div class="user-type-info">
+                      <h4>Pregnant Woman</h4>
+                      <p>Expectant mother with priority access</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="luggage-section">
+                <div class="checkbox-wrapper" id="luggageCheckbox">
+                  <div class="checkbox" id="checkbox-luggage"></div>
+                  <label class="checkbox-label">
+                    <svg
+                      style="color: #4b5563"
+                      width="20"
+                      height="20"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M9 5l6 0"
+                      />
+                    </svg>
+                    <span>I am carrying heavy luggage</span>
+                  </label>
+                </div>
+                <p class="checkbox-description">
+                  This will help us recommend seats with more storage space
+                </p>
+              </div>
+
+              <div class="action-section">
+                <button type="submit" class="btn btn-primary">
+                  Continue to Seat Selection
+                  <svg
+                    width="16"
+                    height="16"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="space-y-4" style="margin-top: 2rem">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem">
+            <div
+              style="
+                background: white;
+                padding: 1rem;
+                border-radius: 0.75rem;
+                box-shadow: var(--shadow-md);
+              "
+            >
+              <h3
+                style="font-weight: 600; color: #ec4899; margin-bottom: 0.5rem"
+              >
+                Women-Only Cabin
+              </h3>
+              <p style="font-size: 0.875rem; color: #4b5563">
+                Cabin 1 is exclusively reserved for women passengers for
+                enhanced comfort and security.
+              </p>
+            </div>
+            <div
+              style="
+                background: white;
+                padding: 1rem;
+                border-radius: 0.75rem;
+                box-shadow: var(--shadow-md);
+              "
+            >
+              <h3
+                style="font-weight: 600; color: #2563eb; margin-bottom: 0.5rem"
+              >
+                Priority Cabin
+              </h3>
+              <p style="font-size: 0.875rem; color: #4b5563">
+                Cabin 2 is reserved for pregnant women, women with luggage,
+                disabled persons, and elderly passengers.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is logged in
-            const storedUser = localStorage.getItem('metroUser');
-            if (!storedUser) {
-                window.location.href = '/index.html';
-                return;
-            }
+      document.addEventListener("DOMContentLoaded", function () {
+        // Check if user is logged in
+        const storedUser = localStorage.getItem("metroUser");
+        if (!storedUser) {
+          window.location.href = "/index.html";
+          return;
+        }
 
-            let selectedType = 'general';
-            let hasLuggage = false;
+        let selectedType = "general";
+        let hasLuggage = false;
 
-            // Handle user type selection
-            const userTypeOptions = document.querySelectorAll('.user-type-option');
-            const userTypeRadios = document.querySelectorAll('.user-type-radio');
-            const userTypeLabels = document.querySelectorAll('.user-type-label');
+        // Handle user type selection
+        const userTypeOptions = document.querySelectorAll(".user-type-option");
+        const userTypeRadios = document.querySelectorAll(".user-type-radio");
+        const userTypeLabels = document.querySelectorAll(".user-type-label");
 
-            userTypeOptions.forEach((option, index) => {
-                option.addEventListener('click', function() {
-                    const type = this.getAttribute('data-type');
-                    selectedType = type;
+        userTypeOptions.forEach((option, index) => {
+          option.addEventListener("click", function () {
+            const type = this.getAttribute("data-type");
+            selectedType = type;
 
-                    // Reset all selections
-                    userTypeRadios.forEach(radio => radio.classList.remove('selected'));
-                    userTypeLabels.forEach(label => label.classList.remove('selected'));
+            // Reset all selections
+            userTypeRadios.forEach((radio) =>
+              radio.classList.remove("selected"),
+            );
+            userTypeLabels.forEach((label) =>
+              label.classList.remove("selected"),
+            );
 
-                    // Set current selection
-                    userTypeRadios[index].classList.add('selected');
-                    userTypeLabels[index].classList.add('selected');
-                });
-            });
-
-            // Set default selection
-            userTypeRadios[0].classList.add('selected');
-            userTypeLabels[0].classList.add('selected');
-
-            // Handle luggage checkbox
-            const luggageCheckbox = document.getElementById('luggageCheckbox');
-            const checkbox = document.getElementById('checkbox-luggage');
-
-            luggageCheckbox.addEventListener('click', function() {
-                hasLuggage = !hasLuggage;
-                if (hasLuggage) {
-                    checkbox.classList.add('checked');
-                } else {
-                    checkbox.classList.remove('checked');
-                }
-            });
-
-            // Handle form submission
-            const userTypeForm = document.getElementById('userTypeForm');
-            userTypeForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-
-                // Update user data via API
-                const user = JSON.parse(storedUser);
-                const success = await window.authManager.updateUserType(selectedType, hasLuggage);
-
-                if (success) {
-                    // Redirect to booking page
-                    window.location.href = '/booking.html';
-                } else {
-                    alert('Failed to update user type. Please try again.');
-                }
-            });
+            // Set current selection
+            userTypeRadios[index].classList.add("selected");
+            userTypeLabels[index].classList.add("selected");
+          });
         });
+
+        // Set default selection
+        userTypeRadios[0].classList.add("selected");
+        userTypeLabels[0].classList.add("selected");
+
+        // Handle luggage checkbox
+        const luggageCheckbox = document.getElementById("luggageCheckbox");
+        const checkbox = document.getElementById("checkbox-luggage");
+
+        luggageCheckbox.addEventListener("click", function () {
+          hasLuggage = !hasLuggage;
+          if (hasLuggage) {
+            checkbox.classList.add("checked");
+          } else {
+            checkbox.classList.remove("checked");
+          }
+        });
+
+        // Handle form submission
+        const userTypeForm = document.getElementById("userTypeForm");
+        userTypeForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          // Update user data via API
+          const user = JSON.parse(storedUser);
+          const success = await window.authManager.updateUserType(
+            selectedType,
+            hasLuggage,
+          );
+
+          if (success) {
+            // Redirect to booking page
+            window.location.href = "/booking.html";
+          } else {
+            alert("Failed to update user type. Please try again.");
+          }
+        });
+      });
     </script>
-</body>
+  </body>
 </html>
