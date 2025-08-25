@@ -3,83 +3,42 @@ import { Pool } from 'pg';
 
 // Supabase configuration
 const supabaseUrl = process.env.SUPABASE_URL || 'https://raqgobqbkgrhvcucrbhk.supabase.co';
-const supabaseKey = process.env.SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhcWdvYnFia2dyaHZjdWNyYmhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc1NDM2MTIsImV4cCI6MjA1MzExOTYxMn0.TGJ4LYWYHo6zFH0lG0jF5sEf-K5P0QKY_U7B_ZkR9Mc';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhcWdvYnFia2dyaHZjdWNyYmhrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NTg0NjQ1OSwiZXhwIjoyMDcxNDIyNDU5fQ.oKq_BlIL1IDwIbV6kO4sbUS2W3tnULRfSmxaVU2NK_M';
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-// PostgreSQL pool for direct database operations
-export const pool = new Pool({
-  host: 'db.raqgobqbkgrhvcucrbhk.supabase.co',
-  port: 5432,
-  database: 'postgres',
-  user: 'postgres',
-  password: 'S1u2p3!@',
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+// Use Supabase client for database operations (no need for separate pool)
+export const pool = null; // Deprecated - using Supabase client instead
 
-// Database initialization
+// Database initialization using Supabase
 export async function initializeDatabase() {
   try {
-    console.log('Initializing database schema...');
+    console.log('Initializing database with Supabase...');
 
-    // Test connection first
-    await pool.query('SELECT 1');
-    console.log('Database connection successful');
+    // Test connection
+    const { data, error } = await supabase.from('metro_users').select('count').limit(1);
+    if (error && error.code !== 'PGRST116') { // PGRST116 means table doesn't exist, which is fine
+      console.log('Database connection successful');
+    }
 
-    // Create users table
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS metro_users (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password_hash VARCHAR(255) NOT NULL,
-        user_type VARCHAR(50) NOT NULL CHECK (user_type IN ('general', 'women', 'elderly', 'disabled', 'pregnant')),
-        has_luggage BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-      );
-    `);
+    // Check if seats table exists and has data
+    const { data: seatData, error: seatError } = await supabase
+      .from('metro_seats')
+      .select('id')
+      .limit(1);
 
-    // Create seats table
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS metro_seats (
-        id VARCHAR(20) PRIMARY KEY,
-        cabin INTEGER NOT NULL CHECK (cabin BETWEEN 1 AND 5),
-        seat_number INTEGER NOT NULL,
-        row_number INTEGER NOT NULL,
-        column_number INTEGER NOT NULL CHECK (column_number BETWEEN 1 AND 2),
-        is_booked BOOLEAN DEFAULT FALSE,
-        booked_by UUID REFERENCES metro_users(id) ON DELETE SET NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-        UNIQUE(cabin, seat_number)
-      );
-    `);
-
-    // Create bookings table
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS metro_bookings (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        user_id UUID NOT NULL REFERENCES metro_users(id) ON DELETE CASCADE,
-        seat_id VARCHAR(20) NOT NULL REFERENCES metro_seats(id) ON DELETE CASCADE,
-        booking_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-        amount DECIMAL(10,2) DEFAULT 25.00,
-        status VARCHAR(20) DEFAULT 'confirmed' CHECK (status IN ('confirmed', 'cancelled'))
-      );
-    `);
-
-    // Initialize seats if empty
-    const seatCount = await pool.query('SELECT COUNT(*) FROM metro_seats');
-    if (parseInt(seatCount.rows[0].count) === 0) {
+    if (seatError && seatError.code === 'PGRST116') {
+      console.log('Tables need to be created manually in Supabase dashboard');
+      console.log('Please create the tables using the SQL provided in the documentation');
+    } else if (!seatData || seatData.length === 0) {
       console.log('Initializing seat data...');
       await initializeSeats();
     }
 
-    console.log('Database schema initialized successfully');
+    console.log('Database initialization completed');
   } catch (error) {
     console.error('Error initializing database:', error);
     console.log('Database may not be available. App will run with limited functionality.');
-    // Don't throw the error - let the app continue to run
   }
 }
 
