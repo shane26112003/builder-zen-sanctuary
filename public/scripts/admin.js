@@ -57,17 +57,30 @@ class AdminDashboard {
     });
   }
 
+  async checkAdminAuth() {
+    return await window.checkAdminAuth();
+  }
+
+  handleLogout() {
+    window.handleAdminLogout();
+  }
+
   async loadAllData() {
     try {
       // Show loading state
       this.showLoading();
 
+      // Add admin auth to API calls
+      const statsAuth = window.addAdminAuth("/api/admin/stats");
+      const passengersAuth = window.addAdminAuth("/api/admin/passengers");
+      const bookingsAuth = window.addAdminAuth("/api/admin/recent-bookings");
+
       // Load all data in parallel
       const [statsResponse, passengersResponse, bookingsResponse] =
         await Promise.all([
-          fetch("/api/admin/stats"),
-          fetch("/api/admin/passengers"),
-          fetch("/api/admin/recent-bookings"),
+          fetch(statsAuth.url, statsAuth.options),
+          fetch(passengersAuth.url, passengersAuth.options),
+          fetch(bookingsAuth.url, bookingsAuth.options),
         ]);
 
       const statsData = await statsResponse.json();
@@ -216,7 +229,8 @@ class AdminDashboard {
       if (query) params.append("query", query);
       if (userType !== "all") params.append("userType", userType);
 
-      const response = await fetch(`/api/admin/search?${params}`);
+      const searchAuth = window.addAdminAuth(`/api/admin/search?${params}`);
+      const response = await fetch(searchAuth.url, searchAuth.options);
       const data = await response.json();
 
       if (data.success) {
