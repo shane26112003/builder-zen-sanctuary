@@ -45,7 +45,7 @@ export const handleGetBookingStats: RequestHandler = async (req, res) => {
 
 export const handleGetRecentBookings: RequestHandler = async (req, res) => {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await db.supabase
       .from("metro_bookings")
       .select(
         `
@@ -84,7 +84,7 @@ export const handleSearchPassengers: RequestHandler = async (req, res) => {
   try {
     const { query, userType } = req.query;
 
-    let supabaseQuery = supabase
+    let supabaseQuery = db.supabase
       .from("metro_users")
       .select(
         `
