@@ -10,7 +10,13 @@
 .admin-actions {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.admin-actions .btn {
+  white-space: nowrap;
+  min-width: auto;
 }
 
 /* Main Layout */
@@ -431,6 +437,20 @@
 
   .admin-actions {
     flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .admin-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .section-header {
+    padding: var(--space-4);
+  }
+
+  .search-group {
     gap: var(--space-2);
   }
 }
