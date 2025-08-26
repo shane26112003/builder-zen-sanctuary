@@ -5,11 +5,17 @@ class AdminDashboard {
     this.passengers = [];
     this.recentBookings = [];
     this.cabinOccupancy = [];
+    this.adminEmail = null;
 
     this.init();
   }
 
   async init() {
+    // Check authorization first
+    if (!(await this.checkAdminAuth())) {
+      return;
+    }
+
     this.bindEvents();
     await this.loadAllData();
     this.startAutoRefresh();
@@ -44,6 +50,11 @@ class AdminDashboard {
       .addEventListener("click", () => {
         this.exportPassengerData();
       });
+
+    // Logout button
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      this.handleLogout();
+    });
   }
 
   async loadAllData() {
