@@ -9,10 +9,10 @@ export const requireAdmin: RequestHandler = async (req, res, next) => {
 
     // For demo purposes, allow admin access with specific email patterns
     // In production, you'd want proper role-based authentication
-    
+
     let isAdmin = false;
 
-    if (authHeader && authHeader.startsWith('Bearer ')) {
+    if (authHeader && authHeader.startsWith("Bearer ")) {
       // If using bearer token, validate it here
       // For now, we'll accept any bearer token as admin
       isAdmin = true;
@@ -24,28 +24,30 @@ export const requireAdmin: RequestHandler = async (req, res, next) => {
         .eq("id", userId)
         .single();
 
-      if (user.data && (
-        user.data.email.includes("admin") || 
-        user.data.email.includes("manager") ||
-        user.data.user_type === "admin"
-      )) {
+      if (
+        user.data &&
+        (user.data.email.includes("admin") ||
+          user.data.email.includes("manager") ||
+          user.data.user_type === "admin")
+      ) {
         isAdmin = true;
       }
     }
 
     // For demo purposes, also allow admin access from specific email patterns in query
     const { adminEmail } = req.query;
-    if (adminEmail && (
-      adminEmail.toString().includes("admin") || 
-      adminEmail.toString().includes("manager")
-    )) {
+    if (
+      adminEmail &&
+      (adminEmail.toString().includes("admin") ||
+        adminEmail.toString().includes("manager"))
+    ) {
       isAdmin = true;
     }
 
     if (!isAdmin) {
       return res.status(403).json({
         success: false,
-        error: "Admin access required"
+        error: "Admin access required",
       });
     }
 
@@ -54,7 +56,7 @@ export const requireAdmin: RequestHandler = async (req, res, next) => {
     console.error("Admin auth error:", error);
     res.status(500).json({
       success: false,
-      error: "Authorization check failed"
+      error: "Authorization check failed",
     });
   }
 };
@@ -67,24 +69,25 @@ export const checkAdminStatus: RequestHandler = async (req, res) => {
     if (!email) {
       return res.json({
         success: true,
-        isAdmin: false
+        isAdmin: false,
       });
     }
 
     const emailStr = email.toString().toLowerCase();
-    const isAdmin = emailStr.includes("admin") || 
-                   emailStr.includes("manager") ||
-                   emailStr.endsWith("@metroreserve.admin");
+    const isAdmin =
+      emailStr.includes("admin") ||
+      emailStr.includes("manager") ||
+      emailStr.endsWith("@metroreserve.admin");
 
     res.json({
       success: true,
-      isAdmin: isAdmin
+      isAdmin: isAdmin,
     });
   } catch (error) {
     console.error("Admin status check error:", error);
     res.status(500).json({
       success: false,
-      error: "Failed to check admin status"
+      error: "Failed to check admin status",
     });
   }
 };

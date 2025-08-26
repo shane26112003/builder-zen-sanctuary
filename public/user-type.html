@@ -322,7 +322,9 @@
             // Redirect to booking page
             window.location.href = "/booking.html";
           } else {
-            alert(result.error || "Failed to update user type. Please try again.");
+            alert(
+              result.error || "Failed to update user type. Please try again.",
+            );
           }
         });
       });

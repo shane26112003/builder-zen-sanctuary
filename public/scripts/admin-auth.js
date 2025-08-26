@@ -16,7 +16,9 @@ async function checkAdminAuth() {
     }
 
     // Check admin status with backend
-    const response = await fetch(`/api/admin/check-status?email=${encodeURIComponent(user.email)}`);
+    const response = await fetch(
+      `/api/admin/check-status?email=${encodeURIComponent(user.email)}`,
+    );
     const data = await response.json();
 
     if (!data.success || !data.isAdmin) {
@@ -104,18 +106,18 @@ function handleAdminLogout() {
 
 // Add admin email to API calls for authorization
 function addAdminAuth(url, options = {}) {
-  const separator = url.includes('?') ? '&' : '?';
-  const authUrl = `${url}${separator}adminEmail=${encodeURIComponent(window.adminEmail || '')}`;
-  
+  const separator = url.includes("?") ? "&" : "?";
+  const authUrl = `${url}${separator}adminEmail=${encodeURIComponent(window.adminEmail || "")}`;
+
   return {
     url: authUrl,
     options: {
       ...options,
       headers: {
         ...options.headers,
-        'Authorization': `Bearer admin-${window.adminEmail || 'unknown'}`
-      }
-    }
+        Authorization: `Bearer admin-${window.adminEmail || "unknown"}`,
+      },
+    },
   };
 }
 
