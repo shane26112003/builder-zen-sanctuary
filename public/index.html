@@ -75,7 +75,7 @@
             type="button"
             class="btn btn-secondary"
             id="signupBtn"
-            style="width: 100%; margin-bottom: 1rem"
+            style="width: 90%; margin: 0 auto 1rem; display: block"
           >
             Create New Account
           </button>
@@ -87,155 +87,18 @@
       </div>
     </div>
 
-    <!-- Supabase Auth SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Load unified auth system -->
+    <script src="/scripts/unified-auth.js"></script>
 
     <script>
-      // Initialize Supabase client
-      const { createClient } = supabase;
-      const supabaseUrl = "https://raqgobqbkgrhvcucrbhk.supabase.co";
-      const supabaseKey =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJhcWdvYnFia2dyaHZjdWNyYmhrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU4NDY0NTksImV4cCI6MjA3MTQyMjQ1OX0.XTGQmu8WNg8wg-qFyJnfLYN-uLxhPnCLfT6f4MZ8VzY";
-      const supabaseClient = createClient(supabaseUrl, supabaseKey);
-
-      // Enhanced Auth Manager with Supabase
-      class SupabaseAuthManager {
-        constructor() {
-          this.user = null;
-          this.session = null;
-          this.init();
-        }
-
-        async init() {
-          // Check for existing session
-          const {
-            data: { session },
-          } = await supabaseClient.auth.getSession();
-          if (session) {
-            this.session = session;
-            this.user = session.user;
-            this.redirectBasedOnUser();
-          }
-
-          // Listen for auth changes
-          supabaseClient.auth.onAuthStateChange((event, session) => {
-            this.session = session;
-            this.user = session?.user || null;
-
-            if (event === "SIGNED_IN" && session) {
-              this.redirectBasedOnUser();
-            }
-          });
-        }
-
-        async signIn(email, password) {
-          try {
-            const { data, error } =
-              await supabaseClient.auth.signInWithPassword({
-                email,
-                password,
-              });
-
-            if (error) {
-              console.error("Sign in error:", error);
-              return { success: false, error: error.message };
-            }
-
-            return { success: true, user: data.user };
-          } catch (error) {
-            console.error("Sign in error:", error);
-            return { success: false, error: "An unexpected error occurred" };
-          }
-        }
-
-        async signUp(email, password) {
-          try {
-            const { data, error } = await supabaseClient.auth.signUp({
-              email,
-              password,
-            });
-
-            if (error) {
-              console.error("Sign up error:", error);
-              return { success: false, error: error.message };
-            }
-
-            // Create user profile in metro_users table
-            if (data.user) {
-              try {
-                await this.createUserProfile(data.user.id, email);
-              } catch (profileError) {
-                console.warn("Could not create user profile:", profileError);
-              }
-            }
-
-            return { success: true, user: data.user };
-          } catch (error) {
-            console.error("Sign up error:", error);
-            return { success: false, error: "An unexpected error occurred" };
-          }
-        }
-
-        async createUserProfile(userId, email) {
-          const response = await fetch("/api/auth/create-profile", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${this.session?.access_token}`,
-            },
-            body: JSON.stringify({
-              userId,
-              email,
-              userType: "general",
-              hasLuggage: false,
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error("Failed to create user profile");
-          }
-
-          return response.json();
-        }
-
-        async signOut() {
-          const { error } = await supabaseClient.auth.signOut();
-          if (error) {
-            console.error("Sign out error:", error);
-            return false;
-          }
-
-          // Clear local storage
-          localStorage.removeItem("metroUser");
-          localStorage.removeItem("userBookings");
-
-          return true;
-        }
-
-        redirectBasedOnUser() {
-          if (this.user) {
-            // For now, redirect to user type selection
-            // Later we can check user profile to see if they've already selected their type
-            window.location.href = "/user-type.html";
-          }
-        }
-
-        getUser() {
-          return this.user;
-        }
-
-        getSession() {
-          return this.session;
-        }
-
-        isAuthenticated() {
-          return !!this.user;
-        }
-      }
-
       // Initialize auth manager
-      const authManager = new SupabaseAuthManager();
+      const authManager = new MetroAuthManager();
       window.authManager = authManager;
+
+      // Check if already authenticated
+      if (authManager.isAuthenticated()) {
+        authManager.redirectBasedOnUser();
+      }
 
       // DOM event handlers
       document.addEventListener("DOMContentLoaded", function () {
@@ -263,7 +126,8 @@
           const result = await authManager.signIn(email, password);
 
           if (result.success) {
-            // Success - authManager will handle redirect
+            // Success - redirect based on user type
+            authManager.redirectBasedOnUser();
           } else {
             // Show error
             errorMessage.textContent = result.error;
@@ -309,21 +173,22 @@
             errorMessage.style.borderColor = "#bae6fd";
             errorMessage.style.color = "#0369a1";
             errorMessage.textContent =
-              "Account created successfully! Please check your email to verify your account, then sign in.";
+              "Account created successfully! Redirecting...";
             errorMessage.style.display = "block";
 
-            // Clear form
-            document.getElementById("email").value = "";
-            document.getElementById("password").value = "";
+            // Redirect after success
+            setTimeout(() => {
+              authManager.redirectBasedOnUser();
+            }, 1500);
           } else {
             // Show error
             errorMessage.textContent = result.error;
             errorMessage.style.display = "block";
-          }
 
-          // Reset loading state
-          signupBtn.disabled = false;
-          signupBtn.textContent = "Create New Account";
+            // Reset loading state
+            signupBtn.disabled = false;
+            signupBtn.textContent = "Create New Account";
+          }
         });
       });
     </script>

@@ -346,6 +346,28 @@
               </svg>
               New Booking
             </button>
+            <button
+              class="btn btn-outline btn-sm"
+              id="adminBtn"
+              onclick="window.location.href='/admin.html'"
+              style="display: none"
+            >
+              <svg
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m5.07-1.07-.707-.707m0 0l-.707-.707m.707.707l.707.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              Admin
+            </button>
             <button class="btn btn-secondary btn-sm" id="logoutBtn">
               <svg
                 width="16"
@@ -438,6 +460,7 @@
       </div>
     </div>
 
+    <script src="/scripts/admin-visibility.js"></script>
     <script src="/scripts/my-bookings.js"></script>
   </body>
 </html>

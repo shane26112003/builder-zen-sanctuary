@@ -13,6 +13,10 @@
     />
   </head>
   <body>
+    <!-- Load unified auth system -->
+    <script src="/scripts/unified-auth.js"></script>
+    <script src="/scripts/auth.js"></script>
+
     <div class="user-type-container">
       <div class="user-type-content">
         <div class="page-header">
@@ -248,6 +252,7 @@
       </div>
     </div>
 
+    <script src="/scripts/admin-visibility.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // Check if user is logged in
@@ -308,16 +313,18 @@
 
           // Update user data via API
           const user = JSON.parse(storedUser);
-          const success = await window.authManager.updateUserType(
+          const result = await window.authManager.updateUserType(
             selectedType,
             hasLuggage,
           );
 
-          if (success) {
+          if (result.success) {
             // Redirect to booking page
             window.location.href = "/booking.html";
           } else {
-            alert("Failed to update user type. Please try again.");
+            alert(
+              result.error || "Failed to update user type. Please try again.",
+            );
           }
         });
       });

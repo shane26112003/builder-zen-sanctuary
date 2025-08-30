@@ -22,6 +22,7 @@ import {
   handleGetRecentBookings,
   handleSearchPassengers,
 } from "./routes/admin";
+import { requireAdmin, checkAdminStatus } from "./middleware/adminAuth";
 import { initializeDatabase } from "./database";
 
 export function createServer() {
@@ -58,11 +59,12 @@ export function createServer() {
   app.get("/api/bookings/:bookingId/ticket", handleGetBookingTicket);
   app.get("/api/cabins/info", handleGetCabinInfo);
 
-  // Admin routes
-  app.get("/api/admin/passengers", handleGetAllPassengers);
-  app.get("/api/admin/stats", handleGetBookingStats);
-  app.get("/api/admin/recent-bookings", handleGetRecentBookings);
-  app.get("/api/admin/search", handleSearchPassengers);
+  // Admin routes (with authorization)
+  app.get("/api/admin/check-status", checkAdminStatus);
+  app.get("/api/admin/passengers", requireAdmin, handleGetAllPassengers);
+  app.get("/api/admin/stats", requireAdmin, handleGetBookingStats);
+  app.get("/api/admin/recent-bookings", requireAdmin, handleGetRecentBookings);
+  app.get("/api/admin/search", requireAdmin, handleSearchPassengers);
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
