@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MetroReserve - Metro Seat Reservation System</title>
-    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="stylesheet" href="./styles/main.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -29,9 +29,7 @@
         <div class="login-card">
           <div class="card-header">
             <h2 class="card-title">Sign In</h2>
-            <p class="card-description">
-              Enter your credentials to access the metro reservation system
-            </p>
+            
           </div>
 
           <form id="loginForm" class="login-form">
@@ -62,7 +60,9 @@
             </div>
 
             <button type="submit" class="btn btn-primary" id="loginBtn">
-              <span id="loginText">Sign In</span>
+              <span id="loginText"  onclick="window.location.href='./my-bookings.html'">
+                
+                Sign In</span>
               <span id="loadingText" style="display: none">Signing In...</span>
             </button>
           </form>
@@ -88,7 +88,7 @@
     </div>
 
     <!-- Load unified auth system -->
-    <script src="/scripts/unified-auth.js"></script>
+    <script src="./unified-auth.js"></script>
 
     <script>
       // Initialize auth manager

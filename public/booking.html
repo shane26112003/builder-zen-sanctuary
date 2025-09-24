@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Seat Booking - MetroReserve</title>
-    <link rel="stylesheet" href="/styles/main.css" />
-    <link rel="stylesheet" href="/styles/booking.css" />
+    <link rel="stylesheet" href="./styles/main.css" />
+    <link rel="stylesheet" href="./styles/booking.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,8 +15,8 @@
   </head>
   <body>
     <!-- Load unified auth system -->
-    <script src="/scripts/unified-auth.js"></script>
-    <script src="/scripts/auth.js"></script>
+    <script src="./unified-auth.js"></script>
+    <script src="./auth.js"></script>
 
     <!-- Header -->
     <header class="booking-header">
@@ -56,7 +56,7 @@
           <div style="display: flex; gap: 0.5rem">
             <button
               class="btn btn-secondary"
-              onclick="window.location.href='/my-bookings.html'"
+              onclick="window.location.href='./my-bookings.html'"
               style="padding: 0.5rem 1rem; font-size: 0.875rem; height: auto"
             >
               <svg
@@ -79,6 +79,7 @@
               class="btn btn-secondary"
               id="logoutBtn"
               style="padding: 0.5rem 1rem; font-size: 0.875rem; height: auto"
+              onclick="window.location.href='./index.html'"
             >
               <svg
                 width="16"
@@ -263,8 +264,8 @@
       </div>
     </main>
 
-    <script src="/scripts/booking.js"></script>
-    <script src="/scripts/admin-visibility.js"></script>
-    <script src="/scripts/seats.js"></script>
+    <script src="./booking.js"></script>
+    <script src="./admin-visibility.js"></script>
+    <script src="/seats.js"></script>
   </body>
 </html>

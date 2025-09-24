@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Type Selection - MetroReserve</title>
-    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="stylesheet" href="./styles/main.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -14,8 +14,8 @@
   </head>
   <body>
     <!-- Load unified auth system -->
-    <script src="/scripts/unified-auth.js"></script>
-    <script src="/scripts/auth.js"></script>
+    <script src="./unified-auth.js"></script>
+    <script src="./auth.js"></script>
 
     <div class="user-type-container">
       <div class="user-type-content">
@@ -252,7 +252,7 @@
       </div>
     </div>
 
-    <script src="/scripts/admin-visibility.js"></script>
+    <script src="./admin-visibility.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // Check if user is logged in
@@ -320,7 +320,7 @@
 
           if (result.success) {
             // Redirect to booking page
-            window.location.href = "/booking.html";
+            window.location.href = "./booking.html";
           } else {
             alert(
               result.error || "Failed to update user type. Please try again.",

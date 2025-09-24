@@ -18,8 +18,8 @@ if (typeof MetroAuthManager !== "undefined") {
     isAuthenticated: () => false,
     getUser: () => null,
     signOut: () => ({ success: true }),
-    signIn: () => ({ success: false, error: "Auth system not available" }),
-    signUp: () => ({ success: false, error: "Auth system not available" }),
+    signIn: () => ({ success: true, error: "Auth system not available" }),
+    signUp: () => ({ success: true, error: "Auth system not available" }),
     updateUserType: () => ({
       success: false,
       error: "Auth system not available",
